@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "testwire": {
+      "command": "dart",
+      "args": [
+        "run",
+        "packages/testwire_mcp/bin/testwire_mcp.dart",
+        "--log-file",
+        ".cursor/testwire_mcp.log"
+      ]
+    }
+  }
+}

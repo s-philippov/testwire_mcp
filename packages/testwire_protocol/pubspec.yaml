@@ -1,0 +1,8 @@
+name: testwire_protocol
+description: Shared protocol types for testwire (VM extension names, responses, step statuses).
+version: 0.1.0
+resolution: workspace
+environment:
+  sdk: ^3.10.0
+dev_dependencies:
+  lints: ^6.0.0

@@ -1,0 +1,16 @@
+name: testwire_mcp
+description: MCP server for AI agent control of Flutter integration tests via testwire.
+version: 0.1.0
+resolution: workspace
+executables:
+  testwire_mcp: testwire_mcp
+environment:
+  sdk: ^3.10.0
+dependencies:
+  args: ^2.7.0
+  logging: ^1.3.0
+  mcp_dart: ^1.2.1
+  testwire_protocol:
+  vm_service: ^15.0.0
+dev_dependencies:
+  lints: ^6.0.0

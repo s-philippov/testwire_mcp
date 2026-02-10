@@ -1,0 +1,9 @@
+name: testwire_workspace
+publish_to: none
+environment:
+  sdk: ^3.10.0
+workspace:
+  - packages/testwire_protocol
+  - packages/testwire
+  - packages/testwire_mcp
+  - packages/testwire_example
