@@ -43,8 +43,7 @@ Future<void> step({
     try {
       await action();
       // If this step previously failed and now passes, mark as fixed.
-      stepState.status =
-          wasFailedBefore ? StepStatus.fixed : StepStatus.passed;
+      stepState.status = wasFailedBefore ? StepStatus.fixed : StepStatus.passed;
     } catch (e, st) {
       stepState.status = StepStatus.failed;
       stepState.error = e.toString();
@@ -59,8 +58,7 @@ Future<void> step({
     // In agent mode: decide whether to pause.
     if (isAgentMode) {
       final shouldPause =
-          session.pauseAfterEveryStep ||
-          stepState.status == StepStatus.failed;
+          session.pauseAfterEveryStep || stepState.status == StepStatus.failed;
 
       if (shouldPause) {
         session.pauseCompleter = Completer<ResumeSignal>();

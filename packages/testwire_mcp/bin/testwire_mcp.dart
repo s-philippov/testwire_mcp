@@ -73,8 +73,9 @@ Future<int> main(List<String> arguments) async {
     final server = McpServer(
       const Implementation(name: 'testwire-mcp', version: _version),
       options: McpServerOptions(
-        capabilities:
-            const ServerCapabilities(tools: ServerCapabilitiesTools()),
+        capabilities: const ServerCapabilities(
+          tools: ServerCapabilitiesTools(),
+        ),
         instructions: TestwireTool.serverInstructions,
       ),
     );
