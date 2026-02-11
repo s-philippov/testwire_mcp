@@ -2,7 +2,7 @@
 
 Shared protocol types for the testwire ecosystem.
 
-Part of the [testwire](https://github.com/user/testwire) monorepo — see the
+Part of the [testwire](https://github.com/s-philippov/testwire_mcp) monorepo — see the
 root README for full documentation and getting started guide.
 
 ## Purpose
