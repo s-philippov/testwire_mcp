@@ -1,6 +1,5 @@
-name: testwire_example
-description: Example Flutter app demonstrating testwire integration tests.
-publish_to: none
+name: testwire_flutter
+description: Flutter integration test wrapper for testwire with hot-reload support.
 version: 0.1.0
 resolution: workspace
 
@@ -16,8 +15,3 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  integration_test:
-    sdk: flutter
-
-flutter:
-  uses-material-design: true

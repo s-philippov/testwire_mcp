@@ -9,36 +9,29 @@ import 'dart:convert';
 /// [ExtensionResponse.fromMap] to parse a response received over the
 /// VM service wire.
 class ExtensionResponse {
-  const ExtensionResponse._({
-    required this.status,
-    this.mode,
-    this.action,
-  });
+  const ExtensionResponse._({required this.status, this.mode, this.action});
 
   // -- Standard responses --------------------------------------------------
 
   /// Response for [TestwireExtension.stepForward].
-  static const stepForward = ExtensionResponse._(
-    status: 'ok',
-    mode: 'step',
-  );
+  static const stepForward = ExtensionResponse._(status: 'ok', mode: 'step');
 
   /// Response for [TestwireExtension.runRemaining].
-  static const runRemaining = ExtensionResponse._(
-    status: 'ok',
-    mode: 'auto',
-  );
+  static const runRemaining = ExtensionResponse._(status: 'ok', mode: 'auto');
 
   /// Response for [TestwireExtension.retry].
-  static const retry = ExtensionResponse._(
-    status: 'ok',
-    action: 'retry',
-  );
+  static const retry = ExtensionResponse._(status: 'ok', action: 'retry');
 
   /// Response for [TestwireExtension.disconnect].
   static const disconnect = ExtensionResponse._(
     status: 'ok',
     action: 'disconnect',
+  );
+
+  /// Response for [TestwireExtension.notifyHotReload].
+  static const notifyHotReload = ExtensionResponse._(
+    status: 'ok',
+    action: 'hot_reload',
   );
 
   // -- Fields --------------------------------------------------------------

@@ -1,13 +1,8 @@
 {
   "mcpServers": {
     "testwire": {
-      "command": "dart",
-      "args": [
-        "run",
-        "packages/testwire_mcp/bin/testwire_mcp.dart",
-        "--log-file",
-        ".cursor/testwire_mcp.log"
-      ]
+      "type": "stdio",
+      "command": "fvm dart run ${workspaceFolder}/packages/testwire_mcp/bin/testwire_mcp.dart -l FINEST"
     }
   }
 }

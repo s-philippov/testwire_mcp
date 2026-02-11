@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:testwire/src/agent.dart';
+import 'package:testwire/src/hot_reload_interrupt.dart';
 import 'package:testwire/src/session.dart';
 import 'package:testwire_protocol/testwire_protocol.dart' show StepStatus;
 
@@ -11,6 +11,10 @@ import 'package:testwire_protocol/testwire_protocol.dart' show StepStatus;
 /// call `step_forward`, `run_remaining`, or `retry_step`.
 ///
 /// In CI mode, steps execute sequentially without pausing.
+///
+/// When running inside [TestwireTest] or [testwireTest], steps that have
+/// already completed in a previous body invocation are skipped automatically
+/// after a hot reload (tracked by [TestSession.completedStepCount]).
 ///
 /// Example:
 /// ```dart
@@ -29,7 +33,19 @@ Future<void> step({
   required Future<void> Function() action,
 }) async {
   final session = activeSession;
+  final stepIndex = session.registry.steps.length;
   final stepState = session.registry.addStep(description, context: context);
+
+  // --- Skip already-completed steps after a hot-reload re-entry ------------
+  if (stepIndex < session.completedStepCount) {
+    stepState.status = StepStatus.passed;
+    return;
+  }
+
+  // --- Check for pending hot reload before executing -----------------------
+  if (session.hotReloadPending) {
+    throw const HotReloadInterrupt();
+  }
 
   var wasFailedBefore = false;
   var shouldRetry = true;
@@ -49,14 +65,14 @@ Future<void> step({
       stepState.error = e.toString();
       stepState.stackTrace = st.toString();
 
-      if (!isAgentMode) {
+      if (!session.agentMode) {
         // CI mode: rethrow immediately, test fails.
         rethrow;
       }
     }
 
     // In agent mode: decide whether to pause.
-    if (isAgentMode) {
+    if (session.agentMode) {
       final shouldPause =
           session.pauseAfterEveryStep || stepState.status == StepStatus.failed;
 
@@ -72,8 +88,15 @@ Future<void> step({
             shouldRetry = true;
           case ResumeSignal.advance:
             break;
+          case ResumeSignal.hotReload:
+            // Do NOT increment completedStepCount: the current step was
+            // interrupted and should be re-executed after the body re-enters.
+            throw const HotReloadInterrupt();
         }
       }
     }
   }
+
+  // Track completion for hot-reload skip logic.
+  session.completedStepCount = stepIndex + 1;
 }

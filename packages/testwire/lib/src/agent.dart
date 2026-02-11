@@ -26,7 +26,9 @@ const bool isAgentMode = bool.fromEnvironment('AGENT_MODE');
 Future<void> waitForAgentConnection() async {
   final session = startSession();
 
-  if (!isAgentMode) return;
+  if (!isAgentMode) {
+    return;
+  }
 
   session.agentCompleter = Completer<void>();
   await session.agentCompleter!.future;

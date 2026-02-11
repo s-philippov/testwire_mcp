@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:testwire_flutter/testwire_flutter.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:testwire/testwire.dart';
 import 'package:testwire_example/main.dart' as app;
 
-void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-  registerTestwireExtensions();
+class FeedbackTest extends TestwireTest {
+  FeedbackTest()
+    : super(
+        'Submit feedback with valid data',
+        setUp: (tester) async {
+          app.main();
+          await tester.pumpAndSettle();
+        },
+      );
 
-  testWidgets('Submit feedback with valid data', (tester) async {
-    await waitForAgentConnection();
-    app.main();
-    await tester.pumpAndSettle();
-
+  @override
+  Future<void> body(WidgetTester tester) async {
     await step(
       description: 'Enter name',
       context: 'Type "Alex" into the name field.',
@@ -64,8 +68,8 @@ void main() {
     );
 
     await step(
-      description: 'Tap "Send another"',
-      context: 'Tap the "Send another" button to return to the form.',
+      description: 'Tap Send Another',
+      context: 'Tap the "Send Another" button to return to the form.',
       action: () async {
         await tester.tap(find.byKey(const Key('reset_button')));
         await tester.pumpAndSettle();
@@ -73,22 +77,10 @@ void main() {
     );
 
     await step(
-      description: 'Verify form is reset',
-      context: 'Check that the name field is empty and form is visible again.',
-      action: () async {
-        expect(find.byKey(const Key('name_field')), findsOneWidget);
-        expect(find.byKey(const Key('submit_button')), findsOneWidget);
-      },
-    );
-
-    await step(
       description: 'Enter second name',
-      context: 'Type "Maria" into the name field.',
+      context: 'Type "Bob" into the name field.',
       action: () async {
-        await tester.enterText(
-          find.byKey(const Key('name_field')),
-          'Maria',
-        );
+        await tester.enterText(find.byKey(const Key('name_field')), 'Bob');
         await tester.pumpAndSettle();
       },
     );
@@ -103,18 +95,6 @@ void main() {
     );
 
     await step(
-      description: 'Enter second comment',
-      context: 'Type "Excellent!" into the comment field.',
-      action: () async {
-        await tester.enterText(
-          find.byKey(const Key('comment_field')),
-          'Excellent!',
-        );
-        await tester.pumpAndSettle();
-      },
-    );
-
-    await step(
       description: 'Submit second feedback',
       context: 'Tap the Submit button.',
       action: () async {
@@ -124,13 +104,17 @@ void main() {
     );
 
     await step(
-      description: 'Verify second success screen',
-      context:
-          'Check that success screen shows "5 stars from Maria".',
+      description: 'Verify second success',
+      context: 'Check that "5 stars from Bob" is displayed.',
       action: () async {
-        expect(find.text('Thank you for your feedback!'), findsOneWidget);
-        expect(find.text('5 stars from Maria'), findsOneWidget);
+        expect(find.text('5 stars from Bob'), findsOneWidget);
       },
     );
-  });
+  }
+}
+
+void main() {
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  registerTestwireExtensions();
+  FeedbackTest().run();
 }

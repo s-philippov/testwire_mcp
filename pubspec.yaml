@@ -2,8 +2,55 @@ name: testwire_workspace
 publish_to: none
 environment:
   sdk: ^3.10.0
+dev_dependencies:
+  melos: ^7.4.0
 workspace:
   - packages/testwire_protocol
   - packages/testwire
+  - packages/testwire_flutter
   - packages/testwire_mcp
-  - packages/testwire_example
+  - example
+
+melos:
+  scripts:
+    format:
+      description: Check formatting across all packages.
+      run: dart format --set-exit-if-changed .
+      exec:
+        concurrency: 5
+
+    format:fix:
+      description: Fix formatting across all packages.
+      run: dart format .
+      exec:
+        concurrency: 5
+
+    test:
+      description: Run Dart tests in packages that have a test/ directory.
+      run: dart test
+      exec:
+        concurrency: 1
+      packageFilters:
+        dirExists: test
+        noDependsOn: flutter
+
+    test:flutter:
+      description: Run Flutter tests in packages that depend on Flutter.
+      run: flutter test
+      exec:
+        concurrency: 1
+      packageFilters:
+        dirExists: test
+        dependsOn: flutter
+
+    clean:
+      description: Clean build artifacts in all packages.
+      run: flutter clean
+      exec:
+        concurrency: 5
+
+    upgrade:
+      description: Upgrade dependencies in all packages.
+      run: dart pub upgrade
+      exec:
+        concurrency: 5

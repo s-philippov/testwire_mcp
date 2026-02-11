@@ -12,10 +12,7 @@ class FeedbackApp extends StatelessWidget {
     return MaterialApp(
       title: 'Feedback',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorSchemeSeed: Colors.indigo,
-        useMaterial3: true,
-      ),
+      theme: ThemeData(colorSchemeSeed: Colors.indigo, useMaterial3: true),
       home: const FeedbackScreen(),
     );
   }

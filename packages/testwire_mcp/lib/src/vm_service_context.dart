@@ -39,8 +39,9 @@ final class VmServiceContext {
     TestwireTool.stepForward => _stepForward,
     TestwireTool.runRemaining => _runRemaining,
     TestwireTool.retryStep => _retryStep,
-    TestwireTool.hotReload => _hotReload,
-    TestwireTool.hotRestart => _hotRestart,
+    TestwireTool.hotReloadTestwireTest => _hotReload,
+    TestwireTool.hotRestartTestwireTest => _hotRestart,
+    TestwireTool.screenshot => _screenshot,
   };
 
   // ---- Tool callbacks ----
@@ -57,7 +58,8 @@ final class VmServiceContext {
       return CallToolResult(
         content: [
           TextContent(
-            text: 'Connected to test process at $uri. '
+            text:
+                'Connected to test process at $uri. '
                 'Test is waiting. Call step_forward to run one step, '
                 'or run_remaining to run all steps.',
           ),
@@ -76,15 +78,21 @@ final class VmServiceContext {
     Map<String, dynamic> args,
     RequestHandlerExtra extra,
   ) async {
-    _logger.info('Disconnecting');
+    final terminateApp = args['terminate_app'] as bool? ?? true;
+    _logger.info('Disconnecting (terminate_app: $terminateApp)');
 
     try {
-      await connector.disconnect();
+      await connector.disconnect(terminateApp: terminateApp);
+
+      final suffix = terminateApp
+          ? ' The application process has been terminated.'
+          : '';
       return CallToolResult(
         content: [
-          const TextContent(
-            text: 'Disconnected from test process. '
-                'The test will run all remaining steps automatically.',
+          TextContent(
+            text:
+                'Disconnected from test process. '
+                'The test will run all remaining steps automatically.$suffix',
           ),
         ],
       );
@@ -129,7 +137,8 @@ final class VmServiceContext {
       return CallToolResult(
         content: [
           TextContent(
-            text: 'Step forward (${response.mode} mode). '
+            text:
+                'Step forward (${response.mode} mode). '
                 'Use get_test_state to see the result.',
           ),
         ],
@@ -155,7 +164,8 @@ final class VmServiceContext {
       return CallToolResult(
         content: [
           TextContent(
-            text: 'Running remaining steps (${response.mode} mode). '
+            text:
+                'Running remaining steps (${response.mode} mode). '
                 'Test will pause on failure or when all steps complete. '
                 'Use get_test_state to check progress.',
           ),
@@ -181,7 +191,8 @@ final class VmServiceContext {
       return CallToolResult(
         content: [
           const TextContent(
-            text: 'Retrying current step. Test will pause after retry. '
+            text:
+                'Retrying current step. Test will pause after retry. '
                 'Use get_test_state to see if it passed (status will be "fixed").',
           ),
         ],
@@ -207,7 +218,13 @@ final class VmServiceContext {
       if (success) {
         return CallToolResult(
           content: [
-            const TextContent(text: 'Hot reload completed successfully.'),
+            const TextContent(
+              text:
+                  'Hot reload completed successfully. '
+                  'The test will re-enter the body, skipping already-completed '
+                  'steps and executing new or modified ones. '
+                  'Use get_test_state to see the updated steps.',
+            ),
           ],
         );
       } else {
@@ -240,7 +257,8 @@ final class VmServiceContext {
       return CallToolResult(
         content: [
           const TextContent(
-            text: 'Hot restart triggered. The test process is restarting. '
+            text:
+                'Hot restart triggered. The test process is restarting. '
                 'Call connect again with the VM service URI, then use '
                 'step_forward or run_remaining to start the test.',
           ),
@@ -251,6 +269,38 @@ final class VmServiceContext {
       return CallToolResult(
         isError: true,
         content: [TextContent(text: 'Hot restart failed: $err')],
+      );
+    }
+  }
+
+  Future<CallToolResult> _screenshot(
+    Map<String, dynamic> args,
+    RequestHandlerExtra extra,
+  ) async {
+    _logger.info('Taking screenshot');
+
+    try {
+      final screenshots = await connector.takeScreenshots();
+
+      if (screenshots.isEmpty) {
+        return CallToolResult(
+          content: [
+            const TextContent(text: 'No render views available for capture.'),
+          ],
+        );
+      }
+
+      return CallToolResult(
+        content: [
+          for (final base64Png in screenshots)
+            ImageContent(data: base64Png, mimeType: 'image/png'),
+        ],
+      );
+    } catch (err) {
+      _logger.warning('Failed to take screenshot', err);
+      return CallToolResult(
+        isError: true,
+        content: [TextContent(text: 'Screenshot failed: $err')],
       );
     }
   }

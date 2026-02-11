@@ -5,11 +5,7 @@ import 'package:testwire_protocol/testwire_protocol.dart'
 
 /// Represents the state of a single test step.
 class StepState {
-  StepState({
-    required this.index,
-    required this.description,
-    this.context,
-  });
+  StepState({required this.index, required this.description, this.context});
 
   /// Zero-based index of this step in the test.
   final int index;
@@ -60,8 +56,7 @@ class StepRegistry {
       return TestStatus.failed;
     }
     if (_steps.every(
-      (s) =>
-          s.status == StepStatus.passed || s.status == StepStatus.fixed,
+      (s) => s.status == StepStatus.passed || s.status == StepStatus.fixed,
     )) {
       return TestStatus.passed;
     }

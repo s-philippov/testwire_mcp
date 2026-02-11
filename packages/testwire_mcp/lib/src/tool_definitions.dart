@@ -36,7 +36,18 @@ enum TestwireTool {
     title: 'Disconnect',
     description:
         'Disconnects from the currently connected Flutter test process. '
-        'After disconnecting, you must call connect again to use any other tools.',
+        'After disconnecting, you must call connect again to use any other tools. '
+        'By default, the Flutter application process is terminated after the '
+        'test finishes. Set terminate_app to false to keep it running.',
+    inputSchema: JsonObject(
+      properties: {
+        'terminate_app': JsonBoolean(
+          description:
+              'Whether to terminate the Flutter application process after '
+              'disconnecting. Defaults to true.',
+        ),
+      },
+    ),
   ),
   getTestState(
     title: 'Get Test State',
@@ -73,24 +84,44 @@ enum TestwireTool {
     title: 'Retry Step',
     description:
         'Re-executes the current failed step. Use this after fixing the issue '
-        '(e.g., editing code and doing a hot_reload). The test always pauses after '
-        'the retry so you can inspect the result. If the retry succeeds, the step '
-        'status becomes "fixed" instead of "passed" for traceability.',
+        '(e.g., editing code and doing a hot_reload_testwire_test). The test '
+        'always pauses after the retry so you can inspect the result. If the '
+        'retry succeeds, the step status becomes "fixed" instead of "passed" '
+        'for traceability.',
   ),
-  hotReload(
-    title: 'Hot Reload',
+  hotReloadTestwireTest(
+    title: 'Hot Reload (testwire)',
     description:
-        'Performs a hot reload of the Flutter test process. This reloads Dart code '
-        'without restarting the app, preserving the current state. Useful after '
-        'editing test code to apply changes before the next step or retry.',
+        'Performs a hot reload of the running testwire test process. This '
+        'reloads Dart code without restarting the app, preserving the current '
+        'state. After reload, already-completed steps are skipped and new or '
+        'modified steps will execute from where the test left off.\n\n'
+        'IMPORTANT: You MUST use this tool instead of hot_reload from other '
+        'MCP servers (e.g. the Dart/Flutter MCP). Only this tool notifies the '
+        'testwire test runner about the reload so it can re-enter the test '
+        'body correctly. Using a different hot reload tool will reload the '
+        'code but the test will NOT pick up new steps.',
   ),
-  hotRestart(
-    title: 'Hot Restart',
+  hotRestartTestwireTest(
+    title: 'Hot Restart (testwire)',
     description:
-        'Performs a full hot restart of the Flutter test process. This restarts '
-        'the app and test from scratch, re-initializing all state. After restart, '
-        'you must call connect again to re-establish the connection, then use '
-        'step_forward or run_remaining to start the test.',
+        'Performs a full hot restart of the running testwire test process. '
+        'This restarts the app and test from scratch, re-initializing all '
+        'state. After restart, you must call connect again to re-establish '
+        'the connection, then use step_forward or run_remaining to start '
+        'the test.\n\n'
+        'IMPORTANT: You MUST use this tool instead of hot_restart from other '
+        'MCP servers (e.g. the Dart/Flutter MCP). Only this tool properly '
+        'handles the testwire connection lifecycle.',
+  ),
+  screenshot(
+    title: 'Take Screenshot',
+    description:
+        'Captures screenshots of all active render views in the running '
+        'Flutter application and returns them as base64-encoded PNG images. '
+        'Useful for visually inspecting the current state of the UI during '
+        'test execution. Returns one image per render view (typically one).',
+    annotations: ToolAnnotations(title: 'Take Screenshot', readOnlyHint: true),
   );
 
   const TestwireTool({
@@ -109,10 +140,8 @@ enum TestwireTool {
   ///
   /// Converts camelCase enum names to snake_case
   /// (e.g. `getTestState` -> `get_test_state`).
-  String get toolName => name.replaceAllMapped(
-    RegExp('[A-Z]'),
-    (m) => '_${m[0]!.toLowerCase()}',
-  );
+  String get toolName =>
+      name.replaceAllMapped(RegExp('[A-Z]'), (m) => '_${m[0]!.toLowerCase()}');
 
   /// Resolved [ToolAnnotations] — uses [annotations] if provided, otherwise
   /// synthesises one from [title] alone.
@@ -120,16 +149,20 @@ enum TestwireTool {
       annotations ?? ToolAnnotations(title: title);
 
   /// Instructions text for the MCP server describing the full tool set.
-  static String get serverInstructions => '''
-Testwire MCP enables AI agents to control and observe Flutter integration tests running in debug mode. It provides step-by-step execution, retry on failure, and full visibility into test state.
+  static String get serverInstructions =>
+      '''
+Testwire MCP enables AI agents to control and observe Flutter integration tests running in debug mode. It provides step-by-step execution, retry on failure, hot reload with automatic step skipping, and full visibility into test state.
 
 Usage:
-1. Start the Flutter integration test in debug mode with --dart-define=AGENT_MODE=true and note the VM service URI.
+1. Launch the Flutter integration test using "flutter run" (NOT "flutter test") in debug mode with --dart-define=AGENT_MODE=true and note the VM service URI printed in the console. Hot reload and hot restart only work with "flutter run".
 2. Use "connect" with the VM service URI to establish a connection. The test will be waiting.
 3. Use "step_forward" to run one step at a time, or "run_remaining" to run all steps automatically.
 4. Use "get_test_state" to see all steps and their statuses (pending/running/passed/failed/fixed).
-5. If a step fails, inspect the error, fix the code, use "hot_reload" to apply changes, then "retry_step".
-6. Use "hot_restart" to restart the entire test from scratch (requires reconnecting).
+5. If a step fails, inspect the error, fix the code, use "hot_reload_testwire_test" to apply changes, then "retry_step".
+6. To add new steps mid-test: edit the test file, then call "hot_reload_testwire_test". Already-completed steps will be skipped and new steps will execute.
+7. Use "hot_restart_testwire_test" to restart the entire test from scratch (requires reconnecting).
+
+CRITICAL: Always use "hot_reload_testwire_test" and "hot_restart_testwire_test" from THIS server. Do NOT use hot_reload / hot_restart tools from other MCP servers (e.g. the Dart or Flutter MCP). Only the testwire tools properly notify the test runner so it can pick up new steps.
 
 Step statuses:
 ${StepStatus.values.map((s) => '- ${s.name}: ${s.description}').join('\n')}

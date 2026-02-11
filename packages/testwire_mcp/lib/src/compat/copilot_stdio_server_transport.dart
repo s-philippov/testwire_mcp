@@ -73,8 +73,9 @@ final class CopilotCompatStdioServerTransport implements Transport {
       final message = JsonRpcMessage.fromJson(messageMap);
       onmessage?.call(message);
     } catch (e, st) {
-      final err =
-          (e is Error) ? e : StateError('Message parsing error: $e\n$st');
+      final err = (e is Error)
+          ? e
+          : StateError('Message parsing error: $e\n$st');
       try {
         onerror?.call(err);
       } catch (handlerErr) {
@@ -131,8 +132,9 @@ final class CopilotCompatStdioServerTransport implements Transport {
       _stdout.write('${jsonEncode(message.toJson())}\n');
       return Future.value();
     } catch (e) {
-      final Error dartError =
-          e is Error ? e : StateError('Failed to send message: $e');
+      final Error dartError = e is Error
+          ? e
+          : StateError('Failed to send message: $e');
       try {
         onerror?.call(dartError);
       } catch (handlerErr) {

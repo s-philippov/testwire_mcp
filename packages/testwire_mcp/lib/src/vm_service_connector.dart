@@ -97,13 +97,16 @@ class VmServiceConnector {
     }
   }
 
-  /// Signals the test that the agent is disconnecting, then drops the
+  /// Signals the test that the agent is disconnecting, waits for it to
+  /// finish, then terminates the application process and drops the
   /// VM service connection.
   ///
   /// The test will run all remaining steps without pausing, as if
-  /// `run_remaining` was called.  If the signal fails (e.g. the isolate
-  /// already exited), the connection is dropped silently.
-  Future<void> disconnect() async {
+  /// `run_remaining` was called.  After the test completes the Flutter
+  /// application is exited so that the `flutter run` process terminates
+  /// cleanly.  If any signal fails (e.g. the isolate already exited),
+  /// the connection is dropped silently.
+  Future<void> disconnect({bool terminateApp = true}) async {
     if (_service != null) {
       _logger.info('Disconnecting from VM service');
 
@@ -117,9 +120,29 @@ class VmServiceConnector {
         _logger.fine('Could not signal disconnect (test may have ended): $err');
       }
 
+      if (terminateApp) {
+        // Give the test a moment to complete before killing the app.
+        await Future<void>.delayed(const Duration(seconds: 2));
+
+        // Terminate the Flutter application so `flutter run` exits.
+        // The app may exit before responding, so use a short timeout.
+        try {
+          final exitMethod =
+              _registeredServices['flutterExit'] ?? 's0.flutterExit';
+          await _service!
+              .callMethod(exitMethod)
+              .timeout(const Duration(seconds: 3));
+          _logger.fine('App exit signal sent');
+        } catch (err) {
+          _logger.fine('Could not exit app (may have already exited): $err');
+        }
+      }
+
       await _serviceEventSubscription?.cancel();
       _serviceEventSubscription = null;
-      await _service!.dispose();
+      try {
+        await _service!.dispose().timeout(const Duration(seconds: 2));
+      } catch (_) {}
       _service = null;
       _isolateId = null;
       _registeredServices.clear();
@@ -229,6 +252,18 @@ class VmServiceConnector {
     return _callExtension(TestwireExtension.retry.method);
   }
 
+  /// Captures screenshots of all active render views in the Flutter app.
+  ///
+  /// Returns a list of base64-encoded PNG strings, one per render view.
+  Future<List<String>> takeScreenshots() async {
+    final result = await _callExtension(TestwireExtension.screenshot.method);
+    final screenshots = result['screenshots'];
+    if (screenshots is List) {
+      return screenshots.cast<String>();
+    }
+    return const [];
+  }
+
   /// Performs a hot reload of the Flutter app.
   ///
   /// Returns `true` if reload was successful.
@@ -242,6 +277,7 @@ class VmServiceConnector {
         'reloadSources',
         timeout: const Duration(seconds: 5),
       );
+      bool success;
       if (method != null) {
         _logger.fine('Using registered service method: $method');
         final result = await _service!.callMethod(
@@ -249,13 +285,25 @@ class VmServiceConnector {
           isolateId: _isolateId!,
         );
         _logger.fine('Hot reload completed: result=${result.json}');
-        return result.json?['type'] == 'Success';
+        success = result.json?['type'] == 'Success';
       } else {
         _logger.fine('No registered service, falling back to reloadSources');
         final report = await _service!.reloadSources(_isolateId!);
         _logger.fine('Hot reload completed: success=${report.success}');
-        return report.success ?? false;
+        success = report.success ?? false;
       }
+
+      // Notify the test process so it can re-enter the body with new code.
+      if (success) {
+        try {
+          await _callExtension(TestwireExtension.notifyHotReload.method);
+          _logger.info('Hot reload notification sent to test');
+        } catch (err) {
+          _logger.warning('Failed to notify test of hot reload: $err');
+        }
+      }
+
+      return success;
     } catch (err) {
       _logger.severe('Hot reload failed', err);
       rethrow;
