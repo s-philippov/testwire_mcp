@@ -1,6 +1,7 @@
 name: testwire_mcp
 description: MCP server for AI agent control of Flutter integration tests via testwire.
 version: 0.1.0
+repository: https://github.com/s-philippov/testwire_mcp/tree/main/packages/testwire_mcp
 resolution: workspace
 executables:
   testwire_mcp: testwire_mcp

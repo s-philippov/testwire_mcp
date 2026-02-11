@@ -1,6 +1,7 @@
 name: testwire
 description: Step-based test execution framework for Flutter integration tests with AI agent control.
 version: 0.1.0
+repository: https://github.com/s-philippov/testwire_mcp/tree/main/packages/testwire
 resolution: workspace
 environment:
   sdk: ^3.10.0

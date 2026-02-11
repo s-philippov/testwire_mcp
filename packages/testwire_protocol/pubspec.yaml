@@ -1,6 +1,7 @@
 name: testwire_protocol
 description: Shared protocol types for testwire (VM extension names, responses, step statuses).
 version: 0.1.0
+repository: https://github.com/s-philippov/testwire_mcp/tree/main/packages/testwire_protocol
 resolution: workspace
 environment:
   sdk: ^3.10.0

@@ -1,6 +1,7 @@
 name: testwire_flutter
 description: Flutter integration test wrapper for testwire with hot-reload support.
 version: 0.1.0
+repository: https://github.com/s-philippov/testwire_mcp/tree/main/packages/testwire_flutter
 resolution: workspace
 
 environment:
