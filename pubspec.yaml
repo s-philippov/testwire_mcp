@@ -2,8 +2,10 @@ name: testwire_workspace
 publish_to: none
 environment:
   sdk: ^3.10.0
+  
 dev_dependencies:
   melos: ^7.4.0
+
 workspace:
   - packages/testwire_protocol
   - packages/testwire
@@ -12,6 +14,10 @@ workspace:
   - example
 
 melos:
+  versioning:
+    mode: fixed
+    updateDependents: true
+
   scripts:
     format:
       description: Check formatting across all packages.

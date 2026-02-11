@@ -1,11 +1,9 @@
-import 'dart:async';
 import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 import 'package:testwire/testwire.dart';
-import 'package:testwire/src/hot_reload_interrupt.dart';
 
 import 'screenshot_service.dart';
 
@@ -101,37 +99,8 @@ abstract class TestwireTest {
           await fn(tester);
         }
 
-        final session = activeSession;
-
-        while (true) {
-          session.registry.reset();
-
-          try {
-            // Virtual dispatch → always calls the latest (patched) body.
-            await body(tester);
-
-            if (session.hotReloadPending) {
-              session.hotReloadPending = false;
-              continue;
-            }
-
-            if (session.agentMode && !session.agentDisconnected) {
-              session.postBodyCompleter = Completer<ResumeSignal>();
-              final signal = await session.postBodyCompleter!.future;
-              session.postBodyCompleter = null;
-
-              if (signal == ResumeSignal.hotReload) {
-                session.hotReloadPending = false;
-                continue;
-              }
-            }
-
-            break;
-          } on HotReloadInterrupt {
-            session.hotReloadPending = false;
-            continue;
-          }
-        }
+        // Virtual dispatch → always calls the latest (patched) body.
+        await runTestLoop(activeSession, () => body(tester));
       },
       skip: skip,
       timeout: timeout,
@@ -201,36 +170,7 @@ void testwireTest(
         await setUp(tester);
       }
 
-      final session = activeSession;
-
-      while (true) {
-        session.registry.reset();
-
-        try {
-          await body(tester);
-
-          if (session.hotReloadPending) {
-            session.hotReloadPending = false;
-            continue;
-          }
-
-          if (session.agentMode && !session.agentDisconnected) {
-            session.postBodyCompleter = Completer<ResumeSignal>();
-            final signal = await session.postBodyCompleter!.future;
-            session.postBodyCompleter = null;
-
-            if (signal == ResumeSignal.hotReload) {
-              session.hotReloadPending = false;
-              continue;
-            }
-          }
-
-          break;
-        } on HotReloadInterrupt {
-          session.hotReloadPending = false;
-          continue;
-        }
-      }
+      await runTestLoop(activeSession, () => body(tester));
     },
     skip: skip,
     timeout: timeout,

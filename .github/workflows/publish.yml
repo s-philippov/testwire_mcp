@@ -1,0 +1,40 @@
+name: Publish to pub.dev
+
+on:
+  push:
+    tags:
+      - "v*" # Triggered by version tags like v0.2.0
+
+# Requires OIDC token for pub.dev authentication.
+# See: https://dart.dev/tools/pub/automated-publishing
+permissions:
+  id-token: write
+
+jobs:
+  publish:
+    name: Publish packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: "3.10.0"
+      - run: dart pub global activate melos
+      - run: melos bootstrap
+
+      # Publish in dependency order.
+      - name: Publish testwire_protocol
+        run: dart pub publish --force
+        working-directory: packages/testwire_protocol
+
+      - name: Publish testwire
+        run: dart pub publish --force
+        working-directory: packages/testwire
+
+      - name: Publish testwire_flutter
+        run: dart pub publish --force
+        working-directory: packages/testwire_flutter
+
+      - name: Publish testwire_mcp
+        run: dart pub publish --force
+        working-directory: packages/testwire_mcp

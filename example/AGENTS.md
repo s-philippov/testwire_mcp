@@ -73,8 +73,12 @@ steps are commented out below the `TODO(agent)` marker.
 ## How to launch a test
 
 Use `flutter run` (not `flutter test`) with agent mode enabled.
-**Run the command in the background** — the build takes a while and you should
-not block on it. Poll the terminal output until the VM Service URI appears.
+
+> **IMPORTANT:** Always run `flutter run` in the background (`block_until_ms: 0`
+> or equivalent). The initial build takes 1-3 minutes and will **block your
+> turn** if you wait for it synchronously. Instead, launch in the background,
+> then poll the terminal output every few seconds until the VM Service URI
+> appears.
 
 ```sh
 cd example
