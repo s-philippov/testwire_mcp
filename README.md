@@ -192,53 +192,6 @@ The agent connects via the `connect` MCP tool, then drives the test with
 The [`example`](example) directory includes ready-to-run
 demo scenarios that showcase bug-fixing and incremental development via hot reload.
 
-## Development
-
-```bash
-dart pub get              # Install dependencies (workspace resolves all packages)
-dart analyze              # Lint all packages
-dart format .             # Format all code
-dart test                 # Run Dart unit tests (from a package directory)
-flutter test              # Run Flutter tests (from a package directory)
-```
-
-### CI
-
-Every push and PR to `main` runs
-[GitHub Actions](.github/workflows/ci.yml):
-
-1. `dart analyze --fatal-infos`
-2. `dart format --set-exit-if-changed .`
-3. `dart test` (pure Dart packages)
-4. `flutter test` (Flutter packages)
-
-### Publishing
-
-All four packages are published to [pub.dev](https://pub.dev) together under
-the same version number.
-
-**Release flow:**
-
-1. Update the `version` field in every `packages/*/pubspec.yaml` to the new
-   version.
-2. Update each `packages/*/CHANGELOG.md`.
-3. Commit, tag as `vX.Y.Z`, and push:
-   ```bash
-   git tag v0.2.0
-   git push origin v0.2.0
-   ```
-4. The [`publish`](.github/workflows/publish.yml) workflow publishes packages to
-   pub.dev in dependency order using
-   [OIDC authentication](https://dart.dev/tools/pub/automated-publishing)
-   (no manual credentials needed).
-
-**Publish order** (dependency chain):
-
-```
-testwire_protocol → testwire → testwire_flutter
-                  → testwire_mcp
-```
-
 ## Without agent mode
 
 When `AGENT_MODE` is not set (or `false`), all `step()` calls execute
