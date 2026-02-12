@@ -60,3 +60,15 @@ melos:
       run: dart pub upgrade
       exec:
         concurrency: 5
+
+    bump:
+      description: Version bump based on conventional commits, update changelogs, commit, tag, and push.
+      run: melos version --yes --all && git push --follow-tags
+
+    publish:
+      description: Publish all public packages to pub.dev in dependency order.
+      run: |
+        dart pub publish --force -C packages/testwire_protocol
+        dart pub publish --force -C packages/testwire
+        dart pub publish --force -C packages/testwire_flutter
+        dart pub publish --force -C packages/testwire_mcp
