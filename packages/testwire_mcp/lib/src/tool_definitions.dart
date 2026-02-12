@@ -120,7 +120,10 @@ enum TestwireTool {
         'Captures screenshots of all active render views in the running '
         'Flutter application and returns them as base64-encoded PNG images. '
         'Useful for visually inspecting the current state of the UI during '
-        'test execution. Returns one image per render view (typically one).',
+        'test execution. Returns one image per render view (typically one).\n\n'
+        'NOTE: This captures the Flutter-rendered UI only (no system status bar, '
+        'navigation bar, or OS overlays). For a full device/simulator screenshot, '
+        'use "flutter screenshot" via the shell instead.',
     annotations: ToolAnnotations(title: 'Take Screenshot', readOnlyHint: true),
   );
 
