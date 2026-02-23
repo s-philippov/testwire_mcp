@@ -319,9 +319,7 @@ final class VmServiceContext {
 
     try {
       final result = await deviceControl.grantAllPermissions(appId);
-      return CallToolResult(
-        content: [TextContent(text: result)],
-      );
+      return CallToolResult(content: [TextContent(text: result)]);
     } catch (err) {
       _logger.warning('Failed to grant permissions', err);
       return CallToolResult(
@@ -340,9 +338,7 @@ final class VmServiceContext {
 
     try {
       final result = await deviceControl.revokeAllPermissions(appId);
-      return CallToolResult(
-        content: [TextContent(text: result)],
-      );
+      return CallToolResult(content: [TextContent(text: result)]);
     } catch (err) {
       _logger.warning('Failed to revoke permissions', err);
       return CallToolResult(

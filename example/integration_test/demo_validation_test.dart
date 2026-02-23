@@ -39,7 +39,8 @@ class ValidationDemo extends TestwireTest {
 
     await step(
       description: 'Submit empty form',
-      context: 'Tap Submit without filling any fields — expect validation errors.',
+      context:
+          'Tap Submit without filling any fields — expect validation errors.',
       action: () async {
         await tester.tap(find.byKey(const Key('submit_button')));
         await tester.pumpAndSettle();
@@ -50,7 +51,8 @@ class ValidationDemo extends TestwireTest {
 
     await step(
       description: 'Enter name and submit again',
-      context: 'Fill in name, tap Submit — name error gone, rating error remains.',
+      context:
+          'Fill in name, tap Submit — name error gone, rating error remains.',
       action: () async {
         await tester.enterText(find.byKey(const Key('name_field')), 'Alex');
         await tester.pumpAndSettle();

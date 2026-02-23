@@ -21,9 +21,9 @@ class DeviceControl {
       _Platform.android => _grantAllAndroid(appId),
       _Platform.iosSimulator => _grantAllIosSimulator(appId),
       _Platform.none => throw StateError(
-          'No supported device tools found. '
-          'Ensure adb (Android) or xcrun (iOS Simulator) is available on PATH.',
-        ),
+        'No supported device tools found. '
+        'Ensure adb (Android) or xcrun (iOS Simulator) is available on PATH.',
+      ),
     };
   }
 
@@ -37,9 +37,9 @@ class DeviceControl {
       _Platform.android => _revokeAllAndroid(appId),
       _Platform.iosSimulator => _revokeAllIosSimulator(appId),
       _Platform.none => throw StateError(
-          'No supported device tools found. '
-          'Ensure adb (Android) or xcrun (iOS Simulator) is available on PATH.',
-        ),
+        'No supported device tools found. '
+        'Ensure adb (Android) or xcrun (iOS Simulator) is available on PATH.',
+      ),
     };
   }
 
@@ -58,10 +58,13 @@ class DeviceControl {
     final skipped = <String>[];
 
     for (final permission in requested) {
-      final result = await Process.run(
-        'adb',
-        ['shell', 'pm', 'grant', appId, permission],
-      );
+      final result = await Process.run('adb', [
+        'shell',
+        'pm',
+        'grant',
+        appId,
+        permission,
+      ]);
       if (result.exitCode == 0) {
         granted.add(permission);
         _logger.fine('Granted $permission');
@@ -73,8 +76,10 @@ class DeviceControl {
       }
     }
 
-    final buffer = StringBuffer('Android: granted ${granted.length} '
-        'permission(s) for $appId.');
+    final buffer = StringBuffer(
+      'Android: granted ${granted.length} '
+      'permission(s) for $appId.',
+    );
     if (granted.isNotEmpty) {
       buffer.writeln();
       buffer.writeln('Granted:');
@@ -99,10 +104,13 @@ class DeviceControl {
 
     var revoked = 0;
     for (final permission in requested) {
-      final result = await Process.run(
-        'adb',
-        ['shell', 'pm', 'revoke', appId, permission],
-      );
+      final result = await Process.run('adb', [
+        'shell',
+        'pm',
+        'revoke',
+        appId,
+        permission,
+      ]);
       if (result.exitCode == 0) revoked++;
     }
 
@@ -111,10 +119,12 @@ class DeviceControl {
 
   /// Queries `adb shell dumpsys package` for requested runtime permissions.
   Future<List<String>> _getRequestedAndroidPermissions(String appId) async {
-    final result = await Process.run(
-      'adb',
-      ['shell', 'dumpsys', 'package', appId],
-    );
+    final result = await Process.run('adb', [
+      'shell',
+      'dumpsys',
+      'package',
+      appId,
+    ]);
 
     if (result.exitCode != 0) {
       throw StateError(
@@ -201,10 +211,14 @@ class DeviceControl {
   // ---------------------------------------------------------------------------
 
   Future<String> _grantAllIosSimulator(String appId) async {
-    final result = await Process.run(
-      'xcrun',
-      ['simctl', 'privacy', 'booted', 'grant', 'all', appId],
-    );
+    final result = await Process.run('xcrun', [
+      'simctl',
+      'privacy',
+      'booted',
+      'grant',
+      'all',
+      appId,
+    ]);
 
     if (result.exitCode != 0) {
       final stderr = (result.stderr as String).trim();
@@ -215,10 +229,14 @@ class DeviceControl {
   }
 
   Future<String> _revokeAllIosSimulator(String appId) async {
-    final result = await Process.run(
-      'xcrun',
-      ['simctl', 'privacy', 'booted', 'reset', 'all', appId],
-    );
+    final result = await Process.run('xcrun', [
+      'simctl',
+      'privacy',
+      'booted',
+      'reset',
+      'all',
+      appId,
+    ]);
 
     if (result.exitCode != 0) {
       final stderr = (result.stderr as String).trim();
@@ -253,10 +271,13 @@ class DeviceControl {
 
     // Check for a booted iOS simulator.
     try {
-      final result = await Process.run(
-        'xcrun',
-        ['simctl', 'list', 'devices', 'booted', '-j'],
-      );
+      final result = await Process.run('xcrun', [
+        'simctl',
+        'list',
+        'devices',
+        'booted',
+        '-j',
+      ]);
       if (result.exitCode == 0) {
         final output = result.stdout as String;
         // Simple check: if the JSON output contains a device UUID, there's
