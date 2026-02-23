@@ -19,6 +19,9 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
+      # setup-dart configures OIDC token for pub.dev automated publishing.
+      # flutter-action alone does not handle this.
+      - uses: dart-lang/setup-dart@v1
       - run: dart pub global activate melos
       - run: melos bootstrap
 
