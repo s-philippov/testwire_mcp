@@ -15,6 +15,49 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`testwire_protocol` - `v0.1.7`](#testwire_protocol---v017)
+ - [`testwire` - `v0.1.7`](#testwire---v017)
+ - [`testwire_flutter` - `v0.1.7`](#testwire_flutter---v017)
+ - [`testwire_mcp` - `v0.1.7`](#testwire_mcp---v017)
+ - [`testwire_example` - `v0.1.0+8`](#testwire_example---v0108)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `testwire_example` - `v0.1.0+8`
+
+---
+
+#### `testwire_protocol` - `v0.1.7`
+
+ - Bump "testwire_protocol" to `0.1.7`.
+
+#### `testwire` - `v0.1.7`
+
+ - Bump "testwire" to `0.1.7`.
+
+#### `testwire_flutter` - `v0.1.7`
+
+ - Bump "testwire_flutter" to `0.1.7`.
+
+#### `testwire_mcp` - `v0.1.7`
+
+ - Bump "testwire_mcp" to `0.1.7`.
+
+
+## 2026-02-23
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`testwire_protocol` - `v0.1.6`](#testwire_protocol---v016)
  - [`testwire` - `v0.1.6`](#testwire---v016)
  - [`testwire_flutter` - `v0.1.6`](#testwire_flutter---v016)
