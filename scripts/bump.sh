@@ -71,5 +71,18 @@ fi
 echo ""
 echo "New version: $(current_version)"
 echo ""
-echo "Next steps:"
-echo "  git push --follow-tags    # push commit + tags (triggers CI publish)"
+
+# Push commit first, then tags one-by-one.
+# GitHub Actions silently drops tag events when >3 tags arrive in a single push.
+# See: https://github.com/actions/runner/issues/3644
+echo "Pushing commit..."
+git push
+
+echo "Pushing tags one by one..."
+for tag in $(git tag --points-at HEAD); do
+  echo "  → $tag"
+  git push origin "$tag"
+done
+
+echo ""
+echo "Done. Check CI: gh run list --workflow='Publish to pub.dev'"
