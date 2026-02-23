@@ -126,47 +126,7 @@ enum TestwireTool {
         'use "flutter screenshot" via the shell instead.',
     annotations: ToolAnnotations(title: 'Take Screenshot', readOnlyHint: true),
   ),
-  grantAllPermissions(
-    title: 'Grant All Permissions',
-    description:
-        'Grants all runtime permissions for the app on the connected device '
-        'or simulator. This prevents permission dialogs from appearing during '
-        'test execution.\n\n'
-        'On Android: detects requested dangerous permissions from the app '
-        'manifest and grants each one via adb.\n'
-        'On iOS Simulator: grants all permissions at once via xcrun simctl.\n\n'
-        'Platform is auto-detected. Does NOT require a VM service connection — '
-        'can be called before or after "connect".',
-    inputSchema: JsonObject(
-      properties: {
-        'app_id': JsonString(
-          description:
-              'The application identifier (Android package name or iOS bundle ID). '
-              'Example: "com.example.myapp".',
-        ),
-      },
-      required: ['app_id'],
-    ),
-  ),
-  revokeAllPermissions(
-    title: 'Revoke All Permissions',
-    description:
-        'Revokes (resets) all runtime permissions for the app on the connected '
-        'device or simulator. Useful for testing permission request flows.\n\n'
-        'On Android: revokes all dangerous permissions via adb.\n'
-        'On iOS Simulator: resets all permissions via xcrun simctl.\n\n'
-        'Platform is auto-detected. Does NOT require a VM service connection.',
-    inputSchema: JsonObject(
-      properties: {
-        'app_id': JsonString(
-          description:
-              'The application identifier (Android package name or iOS bundle ID). '
-              'Example: "com.example.myapp".',
-        ),
-      },
-      required: ['app_id'],
-    ),
-  );
+  ;
 
   const TestwireTool({
     required this.title,
@@ -207,10 +167,6 @@ Usage:
 7. Use "hot_restart_testwire_test" to restart the entire test from scratch (requires reconnecting).
 
 CRITICAL: Always use "hot_reload_testwire_test" and "hot_restart_testwire_test" from THIS server. Do NOT use hot_reload / hot_restart tools from other MCP servers (e.g. the Dart or Flutter MCP). Only the testwire tools properly notify the test runner so it can pick up new steps.
-
-Device control:
-- Use "grant_all_permissions" to pre-grant all runtime permissions before or during the test. This prevents system permission dialogs from blocking the test. Works on Android (via adb) and iOS Simulator (via xcrun simctl). Does not require a VM service connection.
-- Use "revoke_all_permissions" to reset permissions if you need to test permission request flows.
 
 Step statuses:
 ${StepStatus.values.map((s) => '- ${s.name}: ${s.description}').join('\n')}

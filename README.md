@@ -58,12 +58,9 @@ That's it — two packages: `testwire_flutter` in your project +
 
 ## How it works
 
-```
-┌──────────┐   MCP    ┌──────────────┐  VM Service  ┌─────────────────┐
-│ AI Agent │ <------> │ testwire_mcp │ <----------> │ Flutter Test    │
-│          │          │  (MCP server)│              │ (on device/sim) │
-└──────────┘          └──────────────┘              └─────────────────┘
-```
+<p align="center">
+  <img src="docs/architecture.png" alt="Testwire architecture" width="800">
+</p>
 
 1. **`flutter run`** launches the integration test on a device or simulator
    with `--dart-define=AGENT_MODE=true`.
