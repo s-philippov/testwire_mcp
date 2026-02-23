@@ -1,3 +1,7 @@
+## 0.1.4
+
+ - **DOCS**: improve READMEs for pub.dev and GitHub discoverability.
+
 ## 0.1.3
 
  - Bump "testwire_mcp" to `0.1.3`.

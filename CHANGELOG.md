@@ -3,6 +3,47 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-02-23
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`testwire_protocol` - `v0.1.4`](#testwire_protocol---v014)
+ - [`testwire` - `v0.1.4`](#testwire---v014)
+ - [`testwire_flutter` - `v0.1.4`](#testwire_flutter---v014)
+ - [`testwire_mcp` - `v0.1.4`](#testwire_mcp---v014)
+ - [`testwire_example` - `v0.1.0+5`](#testwire_example---v0105)
+
+---
+
+#### `testwire_protocol` - `v0.1.4`
+
+ - **DOCS**: improve READMEs for pub.dev and GitHub discoverability.
+
+#### `testwire` - `v0.1.4`
+
+ - **DOCS**: improve READMEs for pub.dev and GitHub discoverability.
+
+#### `testwire_flutter` - `v0.1.4`
+
+ - **DOCS**: improve READMEs for pub.dev and GitHub discoverability.
+
+#### `testwire_mcp` - `v0.1.4`
+
+ - **DOCS**: improve READMEs for pub.dev and GitHub discoverability.
+
+#### `testwire_example` - `v0.1.0+5`
+
+ - **DOCS**: improve READMEs for pub.dev and GitHub discoverability.
+
+
 ## 2026-02-12
 
 ### Changes
