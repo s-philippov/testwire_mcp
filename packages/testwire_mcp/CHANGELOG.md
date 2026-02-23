@@ -1,3 +1,5 @@
+## 0.1.6
+
 ## 0.1.5
 
  - **REFACTOR**: remove device control tools and add docs assets.
