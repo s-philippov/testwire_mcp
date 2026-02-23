@@ -1,5 +1,8 @@
 # Testwire
 
+[![pub](https://img.shields.io/pub/v/testwire_flutter.svg)](https://pub.dev/packages/testwire_flutter)
+[![pub](https://img.shields.io/pub/v/testwire_mcp.svg?label=testwire_mcp)](https://pub.dev/packages/testwire_mcp)
+
 Step-based integration test runner for Flutter, controlled by an AI agent
 through MCP (Model Context Protocol).
 
