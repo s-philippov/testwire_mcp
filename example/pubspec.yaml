@@ -1,7 +1,7 @@
 name: testwire_example
 description: Example Flutter app demonstrating testwire integration tests.
 publish_to: none
-version: 0.1.0+5
+version: 0.1.0+6
 resolution: workspace
 
 environment:

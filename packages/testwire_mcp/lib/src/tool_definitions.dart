@@ -125,8 +125,7 @@ enum TestwireTool {
         'navigation bar, or OS overlays). For a full device/simulator screenshot, '
         'use "flutter screenshot" via the shell instead.',
     annotations: ToolAnnotations(title: 'Take Screenshot', readOnlyHint: true),
-  ),
-  ;
+  );
 
   const TestwireTool({
     required this.title,

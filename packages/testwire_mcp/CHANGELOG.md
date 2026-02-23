@@ -1,3 +1,8 @@
+## 0.1.5
+
+ - **REFACTOR**: remove device control tools and add docs assets.
+ - **FIX**: dart format.
+
 ## 0.1.4
 
  - **DOCS**: improve READMEs for pub.dev and GitHub discoverability.
