@@ -15,6 +15,48 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`testwire_protocol` - `v0.1.5`](#testwire_protocol---v015)
+ - [`testwire` - `v0.1.5`](#testwire---v015)
+ - [`testwire_flutter` - `v0.1.5`](#testwire_flutter---v015)
+ - [`testwire_mcp` - `v0.1.5`](#testwire_mcp---v015)
+ - [`testwire_example` - `v0.1.0+6`](#testwire_example---v0106)
+
+---
+
+#### `testwire_protocol` - `v0.1.5`
+
+ - Bump "testwire_protocol" to `0.1.5`.
+
+#### `testwire` - `v0.1.5`
+
+ - Bump "testwire" to `0.1.5`.
+
+#### `testwire_flutter` - `v0.1.5`
+
+ - Bump "testwire_flutter" to `0.1.5`.
+
+#### `testwire_mcp` - `v0.1.5`
+
+ - **REFACTOR**: remove device control tools and add docs assets.
+ - **FIX**: dart format.
+
+#### `testwire_example` - `v0.1.0+6`
+
+ - **FIX**: dart format.
+
+
+## 2026-02-23
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`testwire_protocol` - `v0.1.4`](#testwire_protocol---v014)
  - [`testwire` - `v0.1.4`](#testwire---v014)
  - [`testwire_flutter` - `v0.1.4`](#testwire_flutter---v014)
