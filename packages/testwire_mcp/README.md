@@ -1,9 +1,29 @@
 # testwire_mcp
 
+[![pub](https://img.shields.io/pub/v/testwire_mcp.svg)](https://pub.dev/packages/testwire_mcp)
+
 MCP server that bridges AI agents to Flutter integration tests via testwire.
 
-Part of the [testwire](https://github.com/s-philippov/testwire_mcp) monorepo — see the
-root README for full documentation and getting started guide.
+> **Testwire** is a step-based integration test runner for Flutter, controlled
+> by an AI agent through MCP. It lets an AI agent run, observe, debug, and
+> modify Flutter integration tests in real time — with hot reload, step-by-step
+> execution, and retry on failure.
+>
+> This package is the **MCP server** — it connects your AI agent (Cursor,
+> Claude Code, Copilot, Gemini CLI, etc.) to a running Flutter test process.
+> For writing tests, add
+> [`testwire_flutter`](https://pub.dev/packages/testwire_flutter) to your app.
+> See the [full documentation](https://github.com/s-philippov/testwire_mcp)
+> for getting started.
+
+## How it works
+
+```
+┌──────────┐   MCP    ┌──────────────┐  VM Service  ┌─────────────────┐
+│ AI Agent │ <------> │ testwire_mcp │ <----------> │ Flutter Test    │
+│          │          │  (MCP server)│              │ (on device/sim) │
+└──────────┘          └──────────────┘              └─────────────────┘
+```
 
 ## Installation
 

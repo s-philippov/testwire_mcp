@@ -25,6 +25,9 @@ pubspec.lock
 *.iml
 .vscode/
 
+# Claude Code
+.claude/
+
 # macOS
 .DS_Store
 *.log

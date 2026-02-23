@@ -10,18 +10,18 @@
 // EXPECTED AGENT WORKFLOW:
 //   1. Connect to the running test via MCP (connect tool).
 //   2. Run all steps at once (run_remaining).
-//   3. Observe the failure in step 4 via get_test_state.
+//   3. Observe the failure in step 5 via get_test_state.
 //   4. Read the error message — it says the expected text was not found.
 //   5. Open this file, find the bug (wrong star count in the expected string).
 //   6. Fix the assertion to match the actual rating (5 stars, not 3).
 //   7. Hot reload (hot_reload_testwire_test) so the fix is picked up.
 //   8. Retry the failed step (retry_step).
-//   9. Verify step 4 now passes (get_test_state — status should be "fixed").
+//   9. Verify step 5 now passes (get_test_state — status should be "fixed").
 //  10. No more steps remain — report the final result.
 //  11. Disconnect (disconnect).
 //
 // THE BUG:
-//   Step 4 expects "3 stars from Alex" but the test taps star_5 (5-star rating).
+//   Step 5 expects "3 stars from Alex" but the test taps star_5 (5-star rating).
 //   The correct expected text is "5 stars from Alex".
 // =============================================================================
 
@@ -44,6 +44,15 @@ class FixErrorDemo extends TestwireTest {
 
   @override
   Future<void> body(WidgetTester tester) async {
+    await step(
+      description: 'Navigate to Leave Review',
+      context: 'Tap the "Leave Review" tile on the home screen.',
+      action: () async {
+        await tester.tap(find.byKey(const Key('leave_review_tile')));
+        await tester.pumpAndSettle();
+      },
+    );
+
     await step(
       description: 'Enter name',
       context: 'Type "Alex" into the name field.',
@@ -90,7 +99,7 @@ class FixErrorDemo extends TestwireTest {
           'Check that the success message and rating summary are displayed.',
       action: () async {
         expect(find.text('Thank you for your feedback!'), findsOneWidget);
-        expect(find.text('5 stars from Alex'), findsOneWidget);
+        expect(find.text('3 stars from Alex'), findsOneWidget);
       },
     );
   }

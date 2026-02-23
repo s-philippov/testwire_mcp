@@ -8,15 +8,50 @@ integration tests in real time — stepping through actions one by one,
 inspecting results, fixing failures via hot reload, and retrying steps without
 restarting the test.
 
+<p align="center">
+  <img src="docs/testwire_demo.gif" alt="Testwire demo" width="800">
+</p>
+
+## Why?
+
+Without Testwire, an AI agent's workflow with Flutter integration tests looks
+like this: write test → `flutter test` → wait for build and deploy → read
+a wall of logs → fix → **restart everything from scratch**. Each cycle burns
+minutes on rebuild and wastes tokens on re-reading the same verbose output.
+
+Testwire changes this:
+
+- **No restarts.** Fix a failing step, hot-reload, retry — without rebuilding
+  or redeploying the app.
+- **Structured feedback.** Instead of parsing 200 lines of logs, the agent gets
+  a clean status per step: what passed, what failed, and why.
+- **Less tokens.** Each interaction returns a few lines, not the entire test
+  output. No repeated context on every retry cycle.
+- **Works without the agent.** The same test runs as a normal integration test
+  in CI when `AGENT_MODE` is not set.
+
 ## Packages
 
-| Package | Description |
-|---------|-------------|
-| [`testwire`](packages/testwire/) | Core library (pure Dart). Provides `step()`, `TestSession`, VM service extensions. |
-| [`testwire_flutter`](packages/testwire_flutter/) | Flutter wrapper. Provides `TestwireTest` (class-based, hot-reload safe) and `testwireTest()` (function-based, simpler). |
-| [`testwire_protocol`](packages/testwire_protocol/) | Shared protocol definitions — extension names, response formats. |
-| [`testwire_mcp`](packages/testwire_mcp/) | MCP server that bridges AI agents to the running test process. |
-| [`example`](example/) | Example Flutter app with demo integration tests. |
+| Package | Version | Description |
+|---------|---------|-------------|
+| [`testwire`](packages/testwire/) | [![pub](https://img.shields.io/pub/v/testwire.svg)](https://pub.dev/packages/testwire) | Core library (pure Dart). Provides `step()`, `TestSession`, VM service extensions. |
+| [`testwire_flutter`](packages/testwire_flutter/) | [![pub](https://img.shields.io/pub/v/testwire_flutter.svg)](https://pub.dev/packages/testwire_flutter) | Flutter wrapper. Provides `TestwireTest` (class-based, hot-reload safe) and `testwireTest()` (function-based, simpler). |
+| [`testwire_protocol`](packages/testwire_protocol/) | [![pub](https://img.shields.io/pub/v/testwire_protocol.svg)](https://pub.dev/packages/testwire_protocol) | Shared protocol definitions — extension names, response formats. |
+| [`testwire_mcp`](packages/testwire_mcp/) | [![pub](https://img.shields.io/pub/v/testwire_mcp.svg)](https://pub.dev/packages/testwire_mcp) | MCP server that bridges AI agents to the running test process. |
+| [`example`](example/) | — | Example Flutter app with demo integration tests. |
+
+## Which packages do I need?
+
+**For writing tests** (most users):
+- Add `testwire_flutter` to your app's `dev_dependencies` — it re-exports
+  everything you need (`testwire` and `testwire_protocol` are pulled in
+  automatically).
+
+**For running the MCP server** (connects your AI agent to the test):
+- `dart pub global activate testwire_mcp`
+
+That's it — two packages: `testwire_flutter` in your project +
+`testwire_mcp` globally.
 
 ## How it works
 
@@ -198,3 +233,13 @@ When `AGENT_MODE` is not set (or `false`), all `step()` calls execute
 immediately without pausing — the test runs like a normal integration test.
 This means the same test file works for both agent-controlled and CI
 environments.
+
+## Roadmap
+
+- **`testwire_device`** — a standalone Dart package for controlling the
+  device/emulator from the host machine via `adb` (Android) and
+  `xcrun simctl` (iOS Simulator). Permissions (grant/revoke/reset), system
+  settings, deep links, and more — without native code in the app and without
+  changing how tests are launched. Works as a library (from tests), as a CLI
+  (from CI scripts), and as MCP tools (from AI agents).
+  See [proposal](docs/testwire_device_proposal.md).

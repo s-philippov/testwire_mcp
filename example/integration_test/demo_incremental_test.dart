@@ -3,20 +3,20 @@
 // =============================================================================
 //
 // PURPOSE:
-//   This test starts with only ONE active step. The remaining steps are
+//   This test starts with only TWO active steps. The remaining steps are
 //   commented out. It verifies that the agent can add new steps to a running
 //   test via hot reload — simulating incremental test development.
 //
 // EXPECTED AGENT WORKFLOW:
 //   1. Connect to the running test via MCP (connect tool).
-//   2. Step forward (step_forward) to execute the only available step.
-//   3. Check state (get_test_state) — step 0 should pass. The test is now
+//   2. Run remaining (run_remaining) to execute the available steps.
+//   3. Check state (get_test_state) — steps 0-1 should pass. The test is now
 //      paused with no more steps to run.
 //   4. Open this file and uncomment the remaining steps below the
 //      "TODO(agent)" marker.
 //   5. Hot reload (hot_reload_testwire_test) to inject the new steps.
 //   6. Run remaining steps (run_remaining) — they should all pass.
-//   7. Check final state (get_test_state) — all 5 steps should be PASS.
+//   7. Check final state (get_test_state) — all 6 steps should be PASS.
 //   8. Report the result.
 //   9. Disconnect (disconnect).
 //
@@ -41,6 +41,15 @@ class IncrementalDemo extends TestwireTest {
 
   @override
   Future<void> body(WidgetTester tester) async {
+    await step(
+      description: 'Navigate to Leave Review',
+      context: 'Tap the "Leave Review" tile on the home screen.',
+      action: () async {
+        await tester.tap(find.byKey(const Key('leave_review_tile')));
+        await tester.pumpAndSettle();
+      },
+    );
+
     await step(
       description: 'Enter name',
       context: 'Type "Alex" into the name field.',

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "testwire": {
+      "command": "testwire_mcp",
+      "args": []
+    }
+  }
+}

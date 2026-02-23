@@ -13,10 +13,45 @@ class FeedbackApp extends StatelessWidget {
       title: 'Feedback',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(colorSchemeSeed: Colors.indigo, useMaterial3: true),
-      home: const FeedbackScreen(),
+      home: const HomeScreen(),
     );
   }
 }
+
+// =============================================================================
+// Home Screen
+// =============================================================================
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Feedback App')),
+      body: ListView(
+        children: [
+          ListTile(
+            key: const Key('leave_review_tile'),
+            leading: const Icon(Icons.rate_review),
+            title: const Text('Leave Review'),
+            subtitle: const Text('Share your feedback with us'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const FeedbackScreen()),
+            ),
+          ),
+          const Divider(height: 1),
+        ],
+      ),
+    );
+  }
+}
+
+// =============================================================================
+// Feedback Screen
+// =============================================================================
 
 class FeedbackScreen extends StatefulWidget {
   const FeedbackScreen({super.key});
@@ -71,7 +106,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Send Feedback')),
+      appBar: AppBar(title: const Text('Leave Review')),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: _submitted ? _buildSuccess() : _buildForm(),

@@ -3,6 +3,7 @@ import 'package:mcp_dart/mcp_dart.dart';
 import 'package:testwire_protocol/testwire_protocol.dart'
     show ExtensionResponse, StepStatus;
 
+import 'package:testwire_mcp/src/device_control.dart';
 import 'package:testwire_mcp/src/tool_definitions.dart';
 import 'package:testwire_mcp/src/vm_service_connector.dart';
 
@@ -10,9 +11,11 @@ import 'package:testwire_mcp/src/vm_service_connector.dart';
 final class VmServiceContext {
   VmServiceContext()
     : connector = VmServiceConnector(),
+      deviceControl = DeviceControl(),
       _logger = logging.Logger('VmServiceContext');
 
   final VmServiceConnector connector;
+  final DeviceControl deviceControl;
   final logging.Logger _logger;
 
   /// Registers all testwire MCP tools with the [server].
@@ -42,6 +45,8 @@ final class VmServiceContext {
     TestwireTool.hotReloadTestwireTest => _hotReload,
     TestwireTool.hotRestartTestwireTest => _hotRestart,
     TestwireTool.screenshot => _screenshot,
+    TestwireTool.grantAllPermissions => _grantAllPermissions,
+    TestwireTool.revokeAllPermissions => _revokeAllPermissions,
   };
 
   // ---- Tool callbacks ----
@@ -301,6 +306,48 @@ final class VmServiceContext {
       return CallToolResult(
         isError: true,
         content: [TextContent(text: 'Screenshot failed: $err')],
+      );
+    }
+  }
+
+  Future<CallToolResult> _grantAllPermissions(
+    Map<String, dynamic> args,
+    RequestHandlerExtra extra,
+  ) async {
+    final appId = args['app_id'] as String;
+    _logger.info('Granting all permissions for $appId');
+
+    try {
+      final result = await deviceControl.grantAllPermissions(appId);
+      return CallToolResult(
+        content: [TextContent(text: result)],
+      );
+    } catch (err) {
+      _logger.warning('Failed to grant permissions', err);
+      return CallToolResult(
+        isError: true,
+        content: [TextContent(text: 'Failed to grant permissions: $err')],
+      );
+    }
+  }
+
+  Future<CallToolResult> _revokeAllPermissions(
+    Map<String, dynamic> args,
+    RequestHandlerExtra extra,
+  ) async {
+    final appId = args['app_id'] as String;
+    _logger.info('Revoking all permissions for $appId');
+
+    try {
+      final result = await deviceControl.revokeAllPermissions(appId);
+      return CallToolResult(
+        content: [TextContent(text: result)],
+      );
+    } catch (err) {
+      _logger.warning('Failed to revoke permissions', err);
+      return CallToolResult(
+        isError: true,
+        content: [TextContent(text: 'Failed to revoke permissions: $err')],
       );
     }
   }
