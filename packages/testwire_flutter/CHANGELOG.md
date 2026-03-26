@@ -1,3 +1,7 @@
+## 0.1.8
+
+ - **FEAT**: keep UI alive between steps in agent mode.
+
 ## 0.1.7
 
  - Bump "testwire_flutter" to `0.1.7`.

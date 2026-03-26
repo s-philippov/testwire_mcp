@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-03-26
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`testwire` - `v0.1.8`](#testwire---v018)
+ - [`testwire_example` - `v0.1.1`](#testwire_example---v011)
+ - [`testwire_flutter` - `v0.1.8`](#testwire_flutter---v018)
+
+---
+
+#### `testwire` - `v0.1.8`
+
+ - **FEAT**: keep UI alive between steps in agent mode.
+
+#### `testwire_example` - `v0.1.1`
+
+ - **FEAT**: keep UI alive between steps in agent mode.
+
+#### `testwire_flutter` - `v0.1.8`
+
+ - **FEAT**: keep UI alive between steps in agent mode.
+
+
 ## 2026-02-23
 
 ### Changes

@@ -1,3 +1,7 @@
+## 0.1.1
+
+ - **FEAT**: keep UI alive between steps in agent mode.
+
 ## 0.1.0+8
 
  - Update a dependency to the latest release.
