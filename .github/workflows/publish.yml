@@ -25,19 +25,6 @@ jobs:
       - run: dart pub global activate melos
       - run: melos bootstrap
 
-      # Publish in dependency order.
-      - name: Publish testwire_protocol
-        run: dart pub publish --force
-        working-directory: packages/testwire_protocol
-
-      - name: Publish testwire
-        run: dart pub publish --force
-        working-directory: packages/testwire
-
-      - name: Publish testwire_flutter
-        run: dart pub publish --force
-        working-directory: packages/testwire_flutter
-
-      - name: Publish testwire_mcp
-        run: dart pub publish --force
-        working-directory: packages/testwire_mcp
+      # Publish in dependency order, skipping already-published versions.
+      - name: Publish packages
+        run: .github/scripts/publish.sh
