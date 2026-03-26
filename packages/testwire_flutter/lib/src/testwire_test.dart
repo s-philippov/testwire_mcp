@@ -95,6 +95,10 @@ abstract class TestwireTest {
       (tester) async {
         await waitForAgentConnection();
 
+        // Keep the UI alive while the agent is thinking between steps.
+        activeSession.keepAlive =
+            () => tester.pump(TestSession.keepAliveInterval);
+
         if (setUp case final fn?) {
           await fn(tester);
         }
@@ -165,6 +169,10 @@ void testwireTest(
     description,
     (tester) async {
       await waitForAgentConnection();
+
+      // Keep the UI alive while the agent is thinking between steps.
+      activeSession.keepAlive =
+          () => tester.pump(TestSession.keepAliveInterval);
 
       if (setUp != null) {
         await setUp(tester);

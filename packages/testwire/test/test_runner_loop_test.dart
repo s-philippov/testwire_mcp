@@ -296,4 +296,45 @@ void main() {
     session.disconnect();
     await loopFuture;
   });
+
+  // -----------------------------------------------------------------------
+  // Test 7: keepAlive is called while paused between steps
+  // -----------------------------------------------------------------------
+  test('keepAlive is called while paused between steps', () async {
+    var keepAliveCount = 0;
+    session.keepAlive = () async {
+      keepAliveCount++;
+      // Simulate tester.pump() — yield to the event loop.
+      await Future<void>.delayed(Duration.zero);
+    };
+
+    final loopFuture = runTestLoop(session, bodyWithSteps(1));
+
+    // Step 0 pauses.
+    await waitUntil(
+      () =>
+          session.pauseCompleter != null &&
+          !session.pauseCompleter!.isCompleted,
+    );
+
+    // Let a few keep-alive ticks run.
+    await Future<void>.delayed(const Duration(milliseconds: 50));
+
+    expect(keepAliveCount, greaterThan(0),
+        reason: 'keepAlive should have been called during step pause');
+
+    // Advance step, enter post-body pause.
+    session.resumeTest(pauseAfterEveryStep: true);
+    await waitForPostBodyPause();
+
+    // Let a few more keep-alive ticks run.
+    keepAliveCount = 0;
+    await Future<void>.delayed(const Duration(milliseconds: 50));
+
+    expect(keepAliveCount, greaterThan(0),
+        reason: 'keepAlive should have been called during post-body pause');
+
+    session.disconnect();
+    await loopFuture;
+  });
 }

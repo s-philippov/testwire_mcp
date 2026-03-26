@@ -43,6 +43,18 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           const Divider(height: 1),
+          ListTile(
+            key: const Key('check_server_tile'),
+            leading: const Icon(Icons.cloud),
+            title: const Text('Check Server Status'),
+            subtitle: const Text('Simulates a slow network call'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const ServerStatusScreen()),
+            ),
+          ),
+          const Divider(height: 1),
         ],
       ),
     );
@@ -228,6 +240,71 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
             label: const Text('Submit'),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// =============================================================================
+// Server Status Screen — simulates a slow network call
+// =============================================================================
+
+class ServerStatusScreen extends StatefulWidget {
+  const ServerStatusScreen({super.key});
+
+  @override
+  State<ServerStatusScreen> createState() => _ServerStatusScreenState();
+}
+
+class _ServerStatusScreenState extends State<ServerStatusScreen> {
+  String _status = 'idle'; // idle | loading | done
+
+  Future<void> _checkServer() async {
+    setState(() => _status = 'loading');
+    // Simulate a slow network call (2 seconds).
+    await Future<void>.delayed(const Duration(seconds: 2));
+    if (!mounted) return;
+    setState(() => _status = 'done');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Server Status')),
+      body: Center(
+        child: switch (_status) {
+          'loading' => const Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(key: Key('loading_indicator')),
+                SizedBox(height: 16),
+                Text('Checking server…'),
+              ],
+            ),
+          'done' => Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.check_circle, key: const Key('status_ok_icon'), size: 64, color: Colors.green[600]),
+                const SizedBox(height: 16),
+                const Text(
+                  'Server is online',
+                  key: Key('server_online_text'),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Response time: 2000ms',
+                  key: Key('response_time_text'),
+                ),
+              ],
+            ),
+          _ => FilledButton.icon(
+              key: const Key('check_server_button'),
+              onPressed: _checkServer,
+              icon: const Icon(Icons.refresh),
+              label: const Text('Check Server'),
+            ),
+        },
       ),
     );
   }

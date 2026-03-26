@@ -58,6 +58,46 @@ class TestSession {
   /// auto / only on failure).
   bool pauseAfterEveryStep = true;
 
+  /// Optional callback invoked periodically while the test is paused
+  /// (waiting for an agent command).
+  ///
+  /// The Flutter layer sets this to `tester.pump(keepAliveInterval)` so
+  /// that frames keep rendering and async callbacks (network, Firestore,
+  /// animations) are processed even while the agent is thinking.
+  ///
+  /// The callback is awaited on each tick, so it can (and should) be async.
+  Future<void> Function()? keepAlive;
+
+  /// Interval between keep-alive ticks while paused.
+  ///
+  /// Defaults to 100 ms — frequent enough for smooth UI updates, cheap
+  /// enough not to spin the CPU.
+  static const Duration keepAliveInterval = Duration(milliseconds: 100);
+
+  /// Awaits [future] while periodically calling [keepAlive] so the
+  /// application stays responsive.
+  ///
+  /// If [keepAlive] is `null`, falls back to a plain `await`.
+  Future<T> awaitWithKeepAlive<T>(Future<T> future) async {
+    final ka = keepAlive;
+    if (ka == null) return future;
+
+    // Race: keep pumping until the future resolves.
+    T? result;
+    var done = false;
+    // ignore: unawaited_futures
+    future.then((v) {
+      result = v;
+      done = true;
+    });
+
+    while (!done) {
+      await ka();
+    }
+
+    return result as T;
+  }
+
   /// Completer used to pause test execution between steps in agent mode.
   Completer<ResumeSignal>? pauseCompleter;
 
