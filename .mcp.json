@@ -1,8 +1,8 @@
 {
   "mcpServers": {
     "testwire": {
-      "command": "testwire_mcp",
-      "args": []
+      "command": "dart",
+      "args": ["run", "packages/testwire_mcp/bin/testwire_mcp.dart", "-l", "FINEST"]
     }
   }
 }

@@ -20,7 +20,9 @@ enum TestwireTool {
         'The VM service URI is typically in the format ws://127.0.0.1:PORT/ws '
         'and can be found in the Flutter test output when running in debug mode. '
         'This only establishes the connection -- it does NOT start the test. '
-        'Use step_forward or run_remaining to start test execution.',
+        'Use step_forward or run_remaining to start test execution. '
+        'The test process stays alive until you call disconnect -- the app '
+        'UI keeps rendering between steps so async operations continue normally.',
     inputSchema: JsonObject(
       properties: {
         'uri': JsonString(
@@ -56,7 +58,9 @@ enum TestwireTool {
         'Each step shows its index, description, status (pending/running/passed/failed/fixed), '
         'and error details if failed. Also shows the overall test status '
         '(waiting/running/paused/passed/failed) and the current step index. '
-        'This is read-only and can be called at any time after connecting.',
+        'This is read-only and can be called at any time after connecting.\n\n'
+        'TIP: Call screenshot alongside this tool to see the current UI state '
+        'together with the step statuses.',
     annotations: ToolAnnotations(
       title: 'Get Test State',
       readOnlyHint: true,
@@ -121,6 +125,8 @@ enum TestwireTool {
         'Flutter application and returns them as base64-encoded PNG images. '
         'Useful for visually inspecting the current state of the UI during '
         'test execution. Returns one image per render view (typically one).\n\n'
+        'TIP: Call this together with get_test_state to see both step statuses '
+        'and the current UI in one go.\n\n'
         'NOTE: This captures the Flutter-rendered UI only (no system status bar, '
         'navigation bar, or OS overlays). For a full device/simulator screenshot, '
         'use "flutter screenshot" via the shell instead.',
@@ -166,6 +172,8 @@ Usage:
 7. Use "hot_restart_testwire_test" to restart the entire test from scratch (requires reconnecting).
 
 CRITICAL: Always use "hot_reload_testwire_test" and "hot_restart_testwire_test" from THIS server. Do NOT use hot_reload / hot_restart tools from other MCP servers (e.g. the Dart or Flutter MCP). Only the testwire tools properly notify the test runner so it can pick up new steps.
+
+Keep-alive: The application UI stays alive between steps and after the test body completes. Frames are pumped continuously while the test waits for agent commands, so async operations (network responses, timers, animations) keep processing normally. This means screenshots always reflect the current UI state, not a frozen frame. The test remains running until the agent calls "disconnect".
 
 Step statuses:
 ${StepStatus.values.map((s) => '- ${s.name}: ${s.description}').join('\n')}
