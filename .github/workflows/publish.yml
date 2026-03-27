@@ -3,7 +3,7 @@ name: Publish to pub.dev
 on:
   push:
     tags:
-      - "testwire-v*" # Triggered by melos version tags (fixed versioning)
+      - "testwire*-v*" # Triggered by any melos version tag
 
 # Requires OIDC token for pub.dev authentication.
 # See: https://dart.dev/tools/pub/automated-publishing
