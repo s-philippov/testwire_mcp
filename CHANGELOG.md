@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-03-27
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`testwire_mcp` - `v0.1.8`](#testwire_mcp---v018)
+
+---
+
+#### `testwire_mcp` - `v0.1.8`
+
+ - **FEAT**(mcp): add keep-alive docs to tool descriptions and run MCP from source.
+
+
 ## 2026-03-26
 
 ### Changes

@@ -1,3 +1,7 @@
+## 0.1.8
+
+ - **FEAT**(mcp): add keep-alive docs to tool descriptions and run MCP from source.
+
 ## 0.1.7
 
  - Bump "testwire_mcp" to `0.1.7`.
