@@ -3,12 +3,17 @@ name: CI
 on:
   push:
     branches: [main]
+    tags:
+      - "testwire-v*"
   pull_request:
     branches: [main]
 
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
+
+permissions:
+  id-token: write
 
 jobs:
   check:
@@ -26,3 +31,22 @@ jobs:
       - run: melos run format
       - run: melos run test
       - run: melos run test:flutter
+
+  publish:
+    name: Publish to pub.dev
+    needs: check
+    if: startsWith(github.ref, 'refs/tags/testwire-v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      # setup-dart configures OIDC token for pub.dev automated publishing.
+      # flutter-action alone does not handle this.
+      - uses: dart-lang/setup-dart@v1
+      - run: dart pub global activate melos
+      - run: melos bootstrap
+
+      - name: Publish packages
+        run: .github/scripts/publish.sh
