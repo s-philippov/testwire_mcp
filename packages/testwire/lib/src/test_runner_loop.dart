@@ -42,6 +42,11 @@ Future<void> runTestLoop(
         continue;
       }
 
+      // Run early tearDown if configured (before the post-body pause).
+      if (session.onStepsComplete != null) {
+        await session.onStepsComplete!();
+      }
+
       // In agent mode: don't finish the test yet. Wait for the agent
       // to either hot-reload new steps or signal completion
       // (disconnect). Without this pause the test would end

@@ -33,14 +33,13 @@ import 'package:testwire/testwire.dart';
 import 'package:testwire_example/main.dart' as app;
 
 class FixErrorDemo extends TestwireTest {
-  FixErrorDemo()
-    : super(
-        'Submit feedback — agent must fix the deliberate bug',
-        setUp: (tester) async {
-          app.main();
-          await tester.pumpAndSettle();
-        },
-      );
+  FixErrorDemo() : super('Submit feedback — agent must fix the deliberate bug');
+
+  @override
+  Future<void> setUp(WidgetTester tester) async {
+    app.main();
+    await tester.pumpAndSettle();
+  }
 
   @override
   Future<void> body(WidgetTester tester) async {

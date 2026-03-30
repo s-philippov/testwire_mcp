@@ -31,13 +31,13 @@ import 'package:testwire_example/main.dart' as app;
 
 class IncrementalDemo extends TestwireTest {
   IncrementalDemo()
-    : super(
-        'Submit feedback — agent must uncomment remaining steps',
-        setUp: (tester) async {
-          app.main();
-          await tester.pumpAndSettle();
-        },
-      );
+    : super('Submit feedback — agent must uncomment remaining steps');
+
+  @override
+  Future<void> setUp(WidgetTester tester) async {
+    app.main();
+    await tester.pumpAndSettle();
+  }
 
   @override
   Future<void> body(WidgetTester tester) async {

@@ -13,22 +13,31 @@ import 'screenshot_service.dart';
 
 /// Base class for testwire integration tests with **full hot-reload support**.
 ///
-/// Subclass this and override [body] with your `step()` calls.
-/// After a hot reload, `body()` is dispatched via the class vtable, so the
-/// Dart VM always picks up the patched method body — unlike closures which
-/// retain their old code once allocated.
+/// Subclass this and override [setUp], [body], and optionally [tearDown].
+/// All three are dispatched via the class vtable, so the Dart VM picks up
+/// patched method bodies after a hot reload — unlike closures which retain
+/// their old code once allocated.
+///
+/// Lifecycle:
+///   [setUp] → [body] (inside [runTestLoop]) → [tearDown]
+///
+/// [setUp] runs once before the first body call (e.g. to launch the app)
+/// and is **not** re-executed after a hot reload.
+///
+/// [tearDown] always runs in a `finally` block:
+/// - **Agent mode:** after the agent calls `disconnect`.
+/// - **CI mode:** immediately after all steps complete.
 ///
 /// Example:
 /// ```dart
 /// class FeedbackTest extends TestwireTest {
-///   FeedbackTest()
-///       : super(
-///           'Feedback form flow',
-///           setUp: (tester) async {
-///             app.main();
-///             await tester.pumpAndSettle();
-///           },
-///         );
+///   FeedbackTest() : super('Feedback form flow');
+///
+///   @override
+///   Future<void> setUp(WidgetTester tester) async {
+///     app.main();
+///     await tester.pumpAndSettle();
+///   }
 ///
 ///   @override
 ///   Future<void> body(WidgetTester tester) async {
@@ -36,6 +45,11 @@ import 'screenshot_service.dart';
 ///       description: 'Enter name',
 ///       action: () async { /* ... */ },
 ///     );
+///   }
+///
+///   @override
+///   Future<void> tearDown(WidgetTester tester) async {
+///     await signOut();
 ///   }
 /// }
 ///
@@ -47,12 +61,8 @@ import 'screenshot_service.dart';
 /// ```
 abstract class TestwireTest {
   /// Creates a test case with the given [description].
-  ///
-  /// [setUp] runs once before the first body call (e.g. to launch the app)
-  /// and is **not** re-executed after a hot reload.
   TestwireTest(
     this.description, {
-    this.setUp,
     this.skip,
     this.timeout,
     this.semanticsEnabled = true,
@@ -65,9 +75,6 @@ abstract class TestwireTest {
   /// Human-readable test description passed to `testWidgets`.
   final String description;
 
-  /// Optional one-time setup (e.g. launching the app).
-  final Future<void> Function(WidgetTester tester)? setUp;
-
   // -- testWidgets forwarding parameters --
   final bool? skip;
   final Timeout? timeout;
@@ -77,12 +84,32 @@ abstract class TestwireTest {
   final int? retry;
   final LeakTesting? experimentalLeakTesting;
 
+  /// One-time setup (e.g. launching the app).
+  ///
+  /// Runs once before the first [body] call and is **not** re-executed
+  /// after a hot reload. Override in your subclass if needed.
+  Future<void> setUp(WidgetTester tester) async {}
+
   /// The test body containing `step()` calls.
   ///
   /// Override this in your subclass. After a hot reload the Dart VM patches
   /// this method via the class vtable, so the new code executes on the next
   /// loop iteration — no need to restart the test.
   Future<void> body(WidgetTester tester);
+
+  /// Cleanup callback that runs after the test loop ends.
+  ///
+  /// Runs after the test loop ends — by default when the agent calls
+  /// `disconnect` (agent mode) or immediately after all steps (CI mode).
+  ///
+  /// With `--dart-define=TEAR_DOWN_AFTER_STEPS=true`, runs right after the
+  /// last step completes but before the post-body pause, so the agent can
+  /// still inspect the app while tearDown has already cleaned up
+  /// server-side resources.
+  ///
+  /// Override in your subclass if needed (e.g. to delete test users,
+  /// sign out, dispose resources).
+  Future<void> tearDown(WidgetTester tester) async {}
 
   /// Registers and runs the test via `testWidgets`.
   ///
@@ -99,12 +126,20 @@ abstract class TestwireTest {
         activeSession.keepAlive =
             () => tester.pump(TestSession.keepAliveInterval);
 
-        if (setUp case final fn?) {
-          await fn(tester);
-        }
+        await setUp(tester);
 
-        // Virtual dispatch → always calls the latest (patched) body.
-        await runTestLoop(activeSession, () => body(tester));
+        if (tearDownAfterSteps) {
+          // tearDown runs after steps complete, before post-body pause.
+          activeSession.onStepsComplete = () => tearDown(tester);
+          await runTestLoop(activeSession, () => body(tester));
+        } else {
+          // tearDown runs on disconnect (default — better for debugging).
+          try {
+            await runTestLoop(activeSession, () => body(tester));
+          } finally {
+            await tearDown(tester);
+          }
+        }
       },
       skip: skip,
       timeout: timeout,
@@ -155,6 +190,7 @@ void testwireTest(
   String description,
   Future<void> Function(WidgetTester tester) body, {
   Future<void> Function(WidgetTester tester)? setUp,
+  Future<void> Function(WidgetTester tester)? tearDown,
   bool? skip,
   Timeout? timeout,
   bool semanticsEnabled = true,
@@ -178,7 +214,18 @@ void testwireTest(
         await setUp(tester);
       }
 
-      await runTestLoop(activeSession, () => body(tester));
+      if (tearDown != null && tearDownAfterSteps) {
+        activeSession.onStepsComplete = () => tearDown(tester);
+        await runTestLoop(activeSession, () => body(tester));
+      } else {
+        try {
+          await runTestLoop(activeSession, () => body(tester));
+        } finally {
+          if (tearDown != null) {
+            await tearDown(tester);
+          }
+        }
+      }
     },
     skip: skip,
     timeout: timeout,

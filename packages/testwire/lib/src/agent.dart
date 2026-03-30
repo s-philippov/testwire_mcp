@@ -11,6 +11,19 @@ import 'package:testwire/src/session.dart';
 /// In CI mode (default), steps run sequentially without pausing.
 const bool isAgentMode = bool.fromEnvironment('AGENT_MODE');
 
+/// Whether tearDown should run immediately after the last step completes,
+/// before the post-body pause.
+///
+/// Detected via `--dart-define=TEAR_DOWN_AFTER_STEPS=true`.
+///
+/// By default (`false`), tearDown runs on disconnect — this is recommended
+/// for debugging because the app stays in its final state so the agent can
+/// inspect screenshots and UI after all steps have finished.
+///
+/// Set to `true` if tearDown must run while the app is still in its
+/// post-step state (e.g. to clean up server-side resources promptly).
+const bool tearDownAfterSteps = bool.fromEnvironment('TEAR_DOWN_AFTER_STEPS');
+
 /// Blocks until the agent calls `stepForward`, `runRemaining`, or
 /// `disconnect`, which internally signal agent connection.
 ///

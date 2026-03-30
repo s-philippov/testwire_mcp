@@ -58,6 +58,13 @@ class TestSession {
   /// auto / only on failure).
   bool pauseAfterEveryStep = true;
 
+  /// Optional callback invoked once after all steps complete but **before**
+  /// the post-body pause in agent mode.
+  ///
+  /// Used by the Flutter layer to run tearDown early when
+  /// `TEAR_DOWN_AFTER_STEPS=true`.
+  Future<void> Function()? onStepsComplete;
+
   /// Optional callback invoked periodically while the test is paused
   /// (waiting for an agent command).
   ///

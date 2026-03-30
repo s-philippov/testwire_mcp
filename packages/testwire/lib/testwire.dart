@@ -31,7 +31,8 @@
 /// ```
 library;
 
-export 'src/agent.dart' show isAgentMode, waitForAgentConnection;
+export 'src/agent.dart'
+    show isAgentMode, tearDownAfterSteps, waitForAgentConnection;
 export 'src/extensions.dart' show registerTestwireExtensions;
 export 'src/session.dart'
     show ResumeSignal, TestSession, activeSession, startSession;

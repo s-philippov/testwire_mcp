@@ -18,13 +18,13 @@ import 'package:testwire_example/main.dart' as app;
 
 class ValidationDemo extends TestwireTest {
   ValidationDemo()
-    : super(
-        'Form validation — errors appear and clear correctly',
-        setUp: (tester) async {
-          app.main();
-          await tester.pumpAndSettle();
-        },
-      );
+    : super('Form validation — errors appear and clear correctly');
+
+  @override
+  Future<void> setUp(WidgetTester tester) async {
+    app.main();
+    await tester.pumpAndSettle();
+  }
 
   @override
   Future<void> body(WidgetTester tester) async {

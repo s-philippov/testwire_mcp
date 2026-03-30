@@ -37,14 +37,13 @@ import 'package:testwire_flutter/testwire_flutter.dart';
 import 'package:testwire_example/main.dart' as app;
 
 class KeepAliveDemo extends TestwireTest {
-  KeepAliveDemo()
-    : super(
-        'Keep-alive — UI stays responsive between steps',
-        setUp: (tester) async {
-          app.main();
-          await tester.pumpAndSettle();
-        },
-      );
+  KeepAliveDemo() : super('Keep-alive — UI stays responsive between steps');
+
+  @override
+  Future<void> setUp(WidgetTester tester) async {
+    app.main();
+    await tester.pumpAndSettle();
+  }
 
   @override
   Future<void> body(WidgetTester tester) async {
