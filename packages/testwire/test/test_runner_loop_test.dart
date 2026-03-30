@@ -320,8 +320,11 @@ void main() {
     // Let a few keep-alive ticks run.
     await Future<void>.delayed(const Duration(milliseconds: 50));
 
-    expect(keepAliveCount, greaterThan(0),
-        reason: 'keepAlive should have been called during step pause');
+    expect(
+      keepAliveCount,
+      greaterThan(0),
+      reason: 'keepAlive should have been called during step pause',
+    );
 
     // Advance step, enter post-body pause.
     session.resumeTest(pauseAfterEveryStep: true);
@@ -331,8 +334,11 @@ void main() {
     keepAliveCount = 0;
     await Future<void>.delayed(const Duration(milliseconds: 50));
 
-    expect(keepAliveCount, greaterThan(0),
-        reason: 'keepAlive should have been called during post-body pause');
+    expect(
+      keepAliveCount,
+      greaterThan(0),
+      reason: 'keepAlive should have been called during post-body pause',
+    );
 
     session.disconnect();
     await loopFuture;

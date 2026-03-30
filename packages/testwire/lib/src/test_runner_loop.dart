@@ -54,8 +54,9 @@ Future<void> runTestLoop(
       // immediately, leaving no window for hot reload.
       if (session.agentMode && !session.agentDisconnected) {
         session.postBodyCompleter = Completer<ResumeSignal>();
-        final signal = await session
-            .awaitWithKeepAlive(session.postBodyCompleter!.future);
+        final signal = await session.awaitWithKeepAlive(
+          session.postBodyCompleter!.future,
+        );
         session.postBodyCompleter = null;
 
         if (signal == ResumeSignal.hotReload) {

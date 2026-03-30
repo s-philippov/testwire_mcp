@@ -25,6 +25,14 @@ jobs:
       - run: dart pub global activate melos
       - run: melos bootstrap
 
+      # Validate before publishing.
+      - name: Check formatting
+        run: melos run format
+      - name: Analyze
+        run: melos exec -- dart analyze --fatal-infos
+      - name: Run tests
+        run: melos run test
+
       # Publish in dependency order, skipping already-published versions.
       - name: Publish packages
         run: .github/scripts/publish.sh

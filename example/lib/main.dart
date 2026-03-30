@@ -274,36 +274,41 @@ class _ServerStatusScreenState extends State<ServerStatusScreen> {
       body: Center(
         child: switch (_status) {
           'loading' => const Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircularProgressIndicator(key: Key('loading_indicator')),
-                SizedBox(height: 16),
-                Text('Checking server…'),
-              ],
-            ),
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(key: Key('loading_indicator')),
+              SizedBox(height: 16),
+              Text('Checking server…'),
+            ],
+          ),
           'done' => Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.check_circle, key: const Key('status_ok_icon'), size: 64, color: Colors.green[600]),
-                const SizedBox(height: 16),
-                const Text(
-                  'Server is online',
-                  key: Key('server_online_text'),
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Response time: 2000ms',
-                  key: Key('response_time_text'),
-                ),
-              ],
-            ),
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.check_circle,
+                key: const Key('status_ok_icon'),
+                size: 64,
+                color: Colors.green[600],
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Server is online',
+                key: Key('server_online_text'),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Response time: 2000ms',
+                key: Key('response_time_text'),
+              ),
+            ],
+          ),
           _ => FilledButton.icon(
-              key: const Key('check_server_button'),
-              onPressed: _checkServer,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Check Server'),
-            ),
+            key: const Key('check_server_button'),
+            onPressed: _checkServer,
+            icon: const Icon(Icons.refresh),
+            label: const Text('Check Server'),
+          ),
         },
       ),
     );

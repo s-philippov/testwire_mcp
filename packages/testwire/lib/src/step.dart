@@ -78,8 +78,9 @@ Future<void> step({
 
       if (shouldPause) {
         session.pauseCompleter = Completer<ResumeSignal>();
-        final signal =
-            await session.awaitWithKeepAlive(session.pauseCompleter!.future);
+        final signal = await session.awaitWithKeepAlive(
+          session.pauseCompleter!.future,
+        );
         session.pauseCompleter = null;
 
         switch (signal) {
