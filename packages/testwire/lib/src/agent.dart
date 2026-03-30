@@ -15,6 +15,8 @@ const bool isAgentMode = bool.fromEnvironment('AGENT_MODE');
 /// before the post-body pause.
 ///
 /// Detected via `--dart-define=TEAR_DOWN_AFTER_STEPS=true`.
+/// Only effective in agent mode — in CI mode tearDown always runs
+/// immediately after steps (there is no post-body pause).
 ///
 /// By default (`false`), tearDown runs on disconnect — this is recommended
 /// for debugging because the app stays in its final state so the agent can
@@ -22,7 +24,8 @@ const bool isAgentMode = bool.fromEnvironment('AGENT_MODE');
 ///
 /// Set to `true` if tearDown must run while the app is still in its
 /// post-step state (e.g. to clean up server-side resources promptly).
-const bool tearDownAfterSteps = bool.fromEnvironment('TEAR_DOWN_AFTER_STEPS');
+const bool tearDownAfterSteps =
+    !isAgentMode || bool.fromEnvironment('TEAR_DOWN_AFTER_STEPS');
 
 /// Blocks until the agent calls `stepForward`, `runRemaining`, or
 /// `disconnect`, which internally signal agent connection.

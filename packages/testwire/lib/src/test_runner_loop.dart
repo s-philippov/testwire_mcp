@@ -42,7 +42,8 @@ Future<void> runTestLoop(
         continue;
       }
 
-      // Run early tearDown if configured (before the post-body pause).
+      // Run onStepsComplete callback if set (e.g. early tearDown when
+      // TEAR_DOWN_AFTER_STEPS=true).
       if (session.onStepsComplete != null) {
         await session.onStepsComplete!();
       }

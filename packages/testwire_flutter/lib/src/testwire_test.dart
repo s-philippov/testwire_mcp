@@ -128,15 +128,19 @@ abstract class TestwireTest {
 
         await setUp(tester);
 
+        var tearDownDone = false;
+
         if (tearDownAfterSteps) {
-          // tearDown runs after steps complete, before post-body pause.
-          activeSession.onStepsComplete = () => tearDown(tester);
+          activeSession.onStepsComplete = () async {
+            tearDownDone = true;
+            await tearDown(tester);
+          };
+        }
+
+        try {
           await runTestLoop(activeSession, () => body(tester));
-        } else {
-          // tearDown runs on disconnect (default — better for debugging).
-          try {
-            await runTestLoop(activeSession, () => body(tester));
-          } finally {
+        } finally {
+          if (!tearDownDone) {
             await tearDown(tester);
           }
         }
@@ -214,16 +218,20 @@ void testwireTest(
         await setUp(tester);
       }
 
+      var tearDownDone = false;
+
       if (tearDown != null && tearDownAfterSteps) {
-        activeSession.onStepsComplete = () => tearDown(tester);
+        activeSession.onStepsComplete = () async {
+          tearDownDone = true;
+          await tearDown(tester);
+        };
+      }
+
+      try {
         await runTestLoop(activeSession, () => body(tester));
-      } else {
-        try {
-          await runTestLoop(activeSession, () => body(tester));
-        } finally {
-          if (tearDown != null) {
-            await tearDown(tester);
-          }
+      } finally {
+        if (!tearDownDone && tearDown != null) {
+          await tearDown(tester);
         }
       }
     },

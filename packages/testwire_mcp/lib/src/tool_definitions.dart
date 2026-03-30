@@ -38,6 +38,8 @@ enum TestwireTool {
     title: 'Disconnect',
     description:
         'Disconnects from the currently connected Flutter test process. '
+        'This triggers the test tearDown (cleanup) unless '
+        'TEAR_DOWN_AFTER_STEPS=true was set at build time. '
         'After disconnecting, you must call connect again to use any other tools. '
         'By default, the Flutter application process is terminated after the '
         'test finishes. Set terminate_app to false to keep it running.',
@@ -174,6 +176,8 @@ Usage:
 CRITICAL: Always use "hot_reload_testwire_test" and "hot_restart_testwire_test" from THIS server. Do NOT use hot_reload / hot_restart tools from other MCP servers (e.g. the Dart or Flutter MCP). Only the testwire tools properly notify the test runner so it can pick up new steps.
 
 Keep-alive: The application UI stays alive between steps and after the test body completes. Frames are pumped continuously while the test waits for agent commands, so async operations (network responses, timers, animations) keep processing normally. This means screenshots always reflect the current UI state, not a frozen frame. The test remains running until the agent calls "disconnect".
+
+Lifecycle: Tests support setUp, body (steps), and tearDown methods. By default in agent mode, tearDown runs when the agent calls "disconnect" — so the app stays in its final state for inspection. With --dart-define=TEAR_DOWN_AFTER_STEPS=true, tearDown runs immediately after the last step completes (before the post-body pause), useful for cleaning up server-side resources promptly while still keeping the app alive for screenshots.
 
 Step statuses:
 ${StepStatus.values.map((s) => '- ${s.name}: ${s.description}').join('\n')}
