@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-03-30
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`testwire` - `v0.1.9`](#testwire---v019)
+ - [`testwire_example` - `v0.1.2`](#testwire_example---v012)
+ - [`testwire_flutter` - `v0.1.9`](#testwire_flutter---v019)
+
+---
+
+#### `testwire` - `v0.1.9`
+
+ - **FEAT**: add setUp/tearDown lifecycle methods and TEAR_DOWN_AFTER_STEPS flag.
+
+#### `testwire_example` - `v0.1.2`
+
+ - **FEAT**: add setUp/tearDown lifecycle methods and TEAR_DOWN_AFTER_STEPS flag.
+
+#### `testwire_flutter` - `v0.1.9`
+
+ - **FEAT**: add setUp/tearDown lifecycle methods and TEAR_DOWN_AFTER_STEPS flag.
+
+
 ## 2026-03-27
 
 ### Changes

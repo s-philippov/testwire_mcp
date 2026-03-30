@@ -1,3 +1,7 @@
+## 0.1.2
+
+ - **FEAT**: add setUp/tearDown lifecycle methods and TEAR_DOWN_AFTER_STEPS flag.
+
 ## 0.1.1
 
  - **FEAT**: keep UI alive between steps in agent mode.
