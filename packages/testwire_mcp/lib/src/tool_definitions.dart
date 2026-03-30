@@ -56,13 +56,12 @@ enum TestwireTool {
   getTestState(
     title: 'Get Test State',
     description:
-        'Returns the current state of the test including all steps and their statuses. '
+        'Returns the current state of the test including all steps and their statuses, '
+        'plus a screenshot of the current UI. '
         'Each step shows its index, description, status (pending/running/passed/failed/fixed), '
         'and error details if failed. Also shows the overall test status '
         '(waiting/running/paused/passed/failed) and the current step index. '
-        'This is read-only and can be called at any time after connecting.\n\n'
-        'TIP: Call screenshot alongside this tool to see the current UI state '
-        'together with the step statuses.',
+        'This is read-only and can be called at any time after connecting.',
     annotations: ToolAnnotations(
       title: 'Get Test State',
       readOnlyHint: true,
@@ -172,6 +171,7 @@ Usage:
 5. If a step fails, inspect the error, fix the code, use "hot_reload_testwire_test" to apply changes, then "retry_step".
 6. To add new steps mid-test: edit the test file, then call "hot_reload_testwire_test". Already-completed steps will be skipped and new steps will execute.
 7. Use "hot_restart_testwire_test" to restart the entire test from scratch (requires reconnecting).
+8. ALWAYS call "disconnect" when you are done with the test. The test process stays alive indefinitely waiting for commands — without disconnect, the app hangs and tearDown never runs.
 
 CRITICAL: Always use "hot_reload_testwire_test" and "hot_restart_testwire_test" from THIS server. Do NOT use hot_reload / hot_restart tools from other MCP servers (e.g. the Dart or Flutter MCP). Only the testwire tools properly notify the test runner so it can pick up new steps.
 

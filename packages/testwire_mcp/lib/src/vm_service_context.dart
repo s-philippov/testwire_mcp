@@ -113,9 +113,20 @@ final class VmServiceContext {
 
     try {
       final state = await connector.getTestState();
-      return CallToolResult(
-        content: [TextContent(text: _formatTestState(state))],
-      );
+      final content = <Content>[TextContent(text: _formatTestState(state))];
+
+      // Append a screenshot so the agent sees the current UI alongside
+      // the step statuses in one tool call.
+      try {
+        final screenshots = await connector.takeScreenshots();
+        for (final base64Png in screenshots) {
+          content.add(ImageContent(data: base64Png, mimeType: 'image/png'));
+        }
+      } catch (err) {
+        _logger.fine('Screenshot unavailable during get_test_state: $err');
+      }
+
+      return CallToolResult(content: content);
     } catch (err) {
       _logger.warning('Failed to get test state', err);
       return CallToolResult(
