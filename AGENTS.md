@@ -2,6 +2,14 @@
 
 Instructions for AI agents working in this repository.
 
+## Setup after cloning
+
+```sh
+git config core.hooksPath .githooks
+```
+
+This activates the pre-commit hook that checks Dart formatting.
+
 ## Releasing
 
 All packages use **fixed versioning** — they are always released together at
