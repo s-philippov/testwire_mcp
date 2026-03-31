@@ -83,7 +83,18 @@ enum TestwireTool {
         'Runs all remaining test steps automatically without pausing (auto mode). '
         'If the test has not started yet, this signals the test to begin. '
         'Steps execute one after another. The test only pauses when a step fails '
-        'or when all steps have completed. Use get_test_state to check the result.',
+        'or when all steps have completed. Use get_test_state to check the result.\n\n'
+        'Use pause_after to run up to and including a specific step, then pause. '
+        'Accepts a step index (number) or a substring of the step description.',
+    inputSchema: JsonObject(
+      properties: {
+        'pause_after': JsonString(
+          description:
+              'Step index (number) or description substring. '
+              'The test executes this step and pauses after it completes.',
+        ),
+      },
+    ),
   ),
   retryStep(
     title: 'Retry Step',

@@ -53,6 +53,10 @@ void registerTestwireExtensions() {
     method,
     parameters,
   ) async {
+    final pauseAt = parameters['pauseAtStep'];
+    if (pauseAt != null) {
+      activeSession.pauseAtStepIndex = int.parse(pauseAt);
+    }
     activeSession.resumeTest(pauseAfterEveryStep: false);
     return developer.ServiceExtensionResponse.result(
       ExtensionResponse.runRemaining.encode(),

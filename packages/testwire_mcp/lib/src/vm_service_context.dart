@@ -167,17 +167,55 @@ final class VmServiceContext {
     Map<String, dynamic> args,
     RequestHandlerExtra extra,
   ) async {
-    _logger.info('Running remaining steps');
+    final pauseAfter = args['pause_after'] as String?;
+    _logger.info('Running remaining steps (pause_after: $pauseAfter)');
 
     try {
-      final raw = await connector.runRemaining();
+      int? pauseAtStep;
+
+      if (pauseAfter != null) {
+        // Try parsing as index first.
+        pauseAtStep = int.tryParse(pauseAfter);
+
+        // If not a number, resolve by description substring.
+        if (pauseAtStep == null) {
+          final state = await connector.getTestState();
+          final steps = state['steps'] as List<dynamic>? ?? [];
+          for (final step in steps) {
+            final s = step as Map<String, dynamic>;
+            final desc = (s['description'] as String?) ?? '';
+            if (desc.toLowerCase().contains(pauseAfter.toLowerCase())) {
+              pauseAtStep = s['index'] as int;
+              break;
+            }
+          }
+          if (pauseAtStep == null) {
+            return CallToolResult(
+              isError: true,
+              content: [
+                TextContent(
+                  text:
+                      'No step found matching "$pauseAfter". '
+                      'Use get_test_state to see available steps.',
+                ),
+              ],
+            );
+          }
+        }
+      }
+
+      final raw = await connector.runRemaining(pauseAtStep: pauseAtStep);
       final response = ExtensionResponse.fromMap(raw);
+
+      final suffix = pauseAtStep != null
+          ? ' Will pause after step $pauseAtStep.'
+          : '';
       return CallToolResult(
         content: [
           TextContent(
             text:
                 'Running remaining steps (${response.mode} mode). '
-                'Test will pause on failure or when all steps complete. '
+                'Test will pause on failure or when all steps complete.$suffix '
                 'Use get_test_state to check progress.',
           ),
         ],

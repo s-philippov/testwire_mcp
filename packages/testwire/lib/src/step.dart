@@ -73,8 +73,14 @@ Future<void> step({
 
     // In agent mode: decide whether to pause.
     if (session.agentMode) {
-      final shouldPause =
-          session.pauseAfterEveryStep || stepState.status == StepStatus.failed;
+      final hitPauseTarget = session.pauseAtStepIndex == stepIndex;
+      final shouldPause = session.pauseAfterEveryStep ||
+          stepState.status == StepStatus.failed ||
+          hitPauseTarget;
+
+      if (hitPauseTarget) {
+        session.pauseAtStepIndex = null; // One-shot.
+      }
 
       if (shouldPause) {
         session.pauseCompleter = Completer<ResumeSignal>();

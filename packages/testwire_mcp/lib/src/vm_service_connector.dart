@@ -243,8 +243,12 @@ class VmServiceConnector {
   /// Signals the test to run all remaining steps (auto mode).
   ///
   /// If the test has not started yet, this also signals agent connection.
-  Future<Map<String, dynamic>> runRemaining() {
-    return _callExtension(TestwireExtension.runRemaining.method);
+  /// When [pauseAtStep] is provided, the test pauses after that step index.
+  Future<Map<String, dynamic>> runRemaining({int? pauseAtStep}) {
+    return _callExtension(
+      TestwireExtension.runRemaining.method,
+      pauseAtStep != null ? {'pauseAtStep': pauseAtStep.toString()} : null,
+    );
   }
 
   /// Signals the test to retry the current (failed) step.

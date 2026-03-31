@@ -58,6 +58,12 @@ class TestSession {
   /// auto / only on failure).
   bool pauseAfterEveryStep = true;
 
+  /// When set, the test pauses after the step with this index completes
+  /// (in addition to normal pause rules). Cleared after the pause triggers.
+  ///
+  /// Used by `run_remaining` with `until_step` to run up to a specific step.
+  int? pauseAtStepIndex;
+
   /// Optional callback invoked once after all steps complete but **before**
   /// the post-body pause in agent mode.
   ///
