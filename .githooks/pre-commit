@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Check formatting on staged Dart files only.
+STAGED=$(git diff --cached --name-only --diff-filter=ACM -- '*.dart')
+if [ -z "$STAGED" ]; then
+  exit 0
+fi
+
+dart format --set-exit-if-changed $STAGED
