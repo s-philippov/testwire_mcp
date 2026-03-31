@@ -74,7 +74,8 @@ Future<void> step({
     // In agent mode: decide whether to pause.
     if (session.agentMode) {
       final hitPauseTarget = session.pauseAtStepIndex == stepIndex;
-      final shouldPause = session.pauseAfterEveryStep ||
+      final shouldPause =
+          session.pauseAfterEveryStep ||
           stepState.status == StepStatus.failed ||
           hitPauseTarget;
 
