@@ -1,3 +1,8 @@
+## 0.2.1
+
+ - **FIX**: format code and add CI checks to publish workflow.
+ - **FEAT**(mcp): add pause_after parameter to run_remaining.
+
 ## 0.1.9
 
  - **FEAT**: add setUp/tearDown lifecycle methods and TEAR_DOWN_AFTER_STEPS flag.

@@ -3,6 +3,48 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-04-01
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`testwire` - `v0.2.1`](#testwire---v021)
+ - [`testwire_example` - `v0.1.2+1`](#testwire_example---v0121)
+ - [`testwire_flutter` - `v0.2.1`](#testwire_flutter---v021)
+ - [`testwire_mcp` - `v0.2.1`](#testwire_mcp---v021)
+
+---
+
+#### `testwire` - `v0.2.1`
+
+ - **FIX**: format code and add CI checks to publish workflow.
+ - **FEAT**(mcp): add pause_after parameter to run_remaining.
+
+#### `testwire_example` - `v0.1.2+1`
+
+ - **FIX**: format code and add CI checks to publish workflow.
+
+#### `testwire_flutter` - `v0.2.1`
+
+ - **FIX**: format code and add CI checks to publish workflow.
+ - **FIX**: update cross-dependency constraints to ^0.2.0.
+ - **FEAT**: add TEAR_DOWN_AFTER_STEPS flag and update tool descriptions.
+
+#### `testwire_mcp` - `v0.2.1`
+
+ - **FIX**: update cross-dependency constraints to ^0.2.0.
+ - **FEAT**(mcp): add pause_after parameter to run_remaining.
+ - **FEAT**(mcp): embed screenshot in get_test_state and require disconnect.
+ - **FEAT**: add TEAR_DOWN_AFTER_STEPS flag and update tool descriptions.
+
+
 ## 2026-03-30
 
 ### Changes

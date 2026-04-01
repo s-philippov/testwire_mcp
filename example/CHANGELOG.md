@@ -1,3 +1,7 @@
+## 0.1.2+1
+
+ - **FIX**: format code and add CI checks to publish workflow.
+
 ## 0.1.2
 
  - **FEAT**: add setUp/tearDown lifecycle methods and TEAR_DOWN_AFTER_STEPS flag.

@@ -1,3 +1,9 @@
+## 0.2.1
+
+ - **FIX**: format code and add CI checks to publish workflow.
+ - **FIX**: update cross-dependency constraints to ^0.2.0.
+ - **FEAT**: add TEAR_DOWN_AFTER_STEPS flag and update tool descriptions.
+
 ## 0.1.9
 
  - **FEAT**: add setUp/tearDown lifecycle methods and TEAR_DOWN_AFTER_STEPS flag.

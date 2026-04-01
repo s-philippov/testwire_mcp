@@ -1,3 +1,10 @@
+## 0.2.1
+
+ - **FIX**: update cross-dependency constraints to ^0.2.0.
+ - **FEAT**(mcp): add pause_after parameter to run_remaining.
+ - **FEAT**(mcp): embed screenshot in get_test_state and require disconnect.
+ - **FEAT**: add TEAR_DOWN_AFTER_STEPS flag and update tool descriptions.
+
 ## 0.1.8
 
  - **FEAT**(mcp): add keep-alive docs to tool descriptions and run MCP from source.
